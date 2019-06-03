@@ -2,14 +2,28 @@
   "name": "aws4-axios",
   "version": "1.0.2",
   "description": "Axios request interceptor for signing requests with AWSv4",
+  "author": "James Bourne",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jamesmbourne/aws4-axios.git"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/jamesmbourne/project#readme",
+  "bugs": {
+    "url": "https://github.com/axios/axios/issues"
+  },
+  "keywords": [
+    "aws4",
+    "awsv4",
+    "signature",
+    "axios",
+    "interceptor"
+  ],
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "prepublish": "tsc"
   },
-  "keywords": [],
-  "author": "James Bourne",
-  "license": "ISC",
   "devDependencies": {
     "typescript": "^3.5.1"
   },

@@ -8,9 +8,9 @@
     "url": "https://github.com/jamesmbourne/aws4-axios.git"
   },
   "license": "MIT",
-  "homepage": "https://github.com/jamesmbourne/project#readme",
+  "homepage": "https://github.com/jamesmbourne/aws4-axios",
   "bugs": {
-    "url": "https://github.com/axios/axios/issues"
+    "url": "https://github.com/jamesmbourne/aws4-axios/issues"
   },
   "keywords": [
     "aws4",

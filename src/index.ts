@@ -37,7 +37,7 @@ export const interceptor = (options?: InterceptorOptions) => (
 
   const signingOptions: SigningOptions = {
     host,
-    path: pathname,
+    path: pathname + search,
     headers: {},
     region,
     service,

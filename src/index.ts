@@ -1,5 +1,6 @@
 import { sign } from "aws4";
 import { AxiosRequestConfig } from "axios";
+import { URL } from "url";
 
 interface InterceptorOptions {
   service?: string;

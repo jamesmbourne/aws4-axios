@@ -1,6 +1,6 @@
 {
   "name": "aws4-axios",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "Axios request interceptor for signing requests with AWSv4",
   "author": "James Bourne",
   "repository": {

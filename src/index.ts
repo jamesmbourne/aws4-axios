@@ -5,6 +5,7 @@ import { URL } from "url";
 interface InterceptorOptions {
   service?: string;
   region?: string;
+  signQuery?: boolean;
 }
 
 interface SigningOptions {
@@ -14,6 +15,7 @@ interface SigningOptions {
   body?: any;
   region?: string;
   service?: string;
+  signQuery?: boolean;
 }
 
 export const interceptor = (options?: InterceptorOptions) => (
@@ -27,9 +29,10 @@ export const interceptor = (options?: InterceptorOptions) => (
 
   let region: string | undefined;
   let service: string | undefined;
+  let signQuery: boolean | undefined;
 
   if (options) {
-    ({ region, service } = options);
+    ({ region, service, signQuery } = options);
   }
 
   const signingOptions: SigningOptions = {
@@ -37,7 +40,8 @@ export const interceptor = (options?: InterceptorOptions) => (
     path: pathname,
     headers: {},
     region,
-    service
+    service,
+    signQuery
   };
 
   sign(signingOptions);

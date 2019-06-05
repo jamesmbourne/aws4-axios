@@ -25,14 +25,14 @@ export const interceptor = (options?: InterceptorOptions) => (
     throw new Error("No URL present in request config, unable to sign request");
   }
 
-  const { host, pathname } = new URL(config.url);
+  const { host, pathname, search } = new URL(config.url);
 
   let region: string | undefined;
   let service: string | undefined;
   let signQuery: boolean | undefined;
 
   if (options) {
-    ({ region, service, signQuery } = options);
+    ({ region, service } = options);
   }
 
   const signingOptions: SigningOptions = {

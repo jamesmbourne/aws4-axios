@@ -28,34 +28,7 @@ describe("interceptor", () => {
     expect(sign).toBeCalledWith({
       service: "execute-api",
       path: "/foobar",
-      region: "local",
-      host: "example.com"
-    });
-  });
-
-  it("passes headers through", () => {
-    // Arrange
-    const headers = { "Content-Type": "application/json" };
-
-    const request: AxiosRequestConfig = {
       method: "GET",
-      url: "https://example.com/foobar?foo=bar",
-      headers
-    };
-
-    const interceptor = aws4Interceptor({
-      region: "local",
-      service: "execute-api"
-    });
-
-    // Act
-    interceptor(request);
-
-    // Assert
-    expect(sign).toBeCalledWith({
-      headers,
-      service: "execute-api",
-      path: "/foobar?foo=bar",
       region: "local",
       host: "example.com"
     });
@@ -80,6 +53,7 @@ describe("interceptor", () => {
     expect(sign).toBeCalledWith({
       service: "execute-api",
       path: "/foobar?foo=bar",
+      method: "GET",
       region: "local",
       host: "example.com"
     });
@@ -88,6 +62,7 @@ describe("interceptor", () => {
   it("signs POST requests with an object payload", () => {
     // Arrange
     const data = { foo: "bar" };
+
     const request: AxiosRequestConfig = {
       method: "POST",
       url: "https://example.com/foobar",
@@ -106,6 +81,7 @@ describe("interceptor", () => {
     expect(sign).toBeCalledWith({
       service: "execute-api",
       path: "/foobar",
+      method: "POST",
       region: "local",
       host: "example.com",
       body: '{"foo":"bar"}'
@@ -132,6 +108,7 @@ describe("interceptor", () => {
     // Assert
     expect(sign).toBeCalledWith({
       service: "execute-api",
+      method: "POST",
       path: "/foobar",
       region: "local",
       host: "example.com",

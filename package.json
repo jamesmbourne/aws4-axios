@@ -24,7 +24,8 @@
   "scripts": {
     "prepare": "tsc",
     "test": "jest",
-    "test-ci": "jest --config jest.config.ci.js"
+    "test-ci": "jest --config jest.config.ci.js",
+    "test-it": "jest --config jest.config.it.js"
   },
   "devDependencies": {
     "@types/jest": "^24.0.13",

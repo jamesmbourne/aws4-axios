@@ -37,6 +37,7 @@ export const aws4Interceptor = (options?: InterceptorOptions) => (
   }
 
   const { host, pathname, search } = new URL(config.url);
+  const { data, headers } = config;
 
   let region: string | undefined;
   let service: string | undefined;
@@ -49,11 +50,11 @@ export const aws4Interceptor = (options?: InterceptorOptions) => (
   const signingOptions: SigningOptions = {
     host,
     path: pathname + search,
-    headers: {},
+    headers: headers,
     region,
     service,
     ...(signQuery !== undefined ? { signQuery } : {}),
-    body: getBody(config.data)
+    body: getBody(data)
   };
 
   sign(signingOptions);

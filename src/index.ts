@@ -18,7 +18,18 @@ interface SigningOptions {
   signQuery?: boolean;
 }
 
-export const interceptor = (options?: InterceptorOptions) => (
+/**
+ * Create an interceptor to add to the Axios request chain. This interceptor
+ * will sign requests with the AWSv4 signature.
+ *
+ * @example
+ * axios.interceptors.request.use(
+ *     aws4Interceptor({ region: "eu-west-2", service: "execute-api" })
+ * );
+ *
+ * @param options The options to be used when signing a request
+ */
+export const aws4Interceptor = (options?: InterceptorOptions) => (
   config: AxiosRequestConfig
 ) => {
   if (!config.url) {
@@ -50,3 +61,8 @@ export const interceptor = (options?: InterceptorOptions) => (
 
   return config;
 };
+
+/**
+ * @deprecated Please use the alternative export of `aws4Interceptor`
+ */
+export const interceptor = aws4Interceptor;

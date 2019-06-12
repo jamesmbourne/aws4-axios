@@ -29,4 +29,60 @@ describe("interceptor", () => {
       host: "example.com"
     });
   });
+
+  it("signs POST requests with an object payload", () => {
+    // Arrange
+    const data = { foo: "bar" };
+    const request: AxiosRequestConfig = {
+      method: "POST",
+      url: "https://example.com/foobar",
+      data
+    };
+
+    const interceptor = aws4Interceptor({
+      region: "local",
+      service: "execute-api"
+    });
+
+    // Act
+    interceptor(request);
+
+    // Assert
+    expect(sign).toBeCalledWith({
+      headers: {},
+      service: "execute-api",
+      path: "/foobar",
+      region: "local",
+      host: "example.com",
+      body: '{"foo":"bar"}'
+    });
+  });
+
+  it("signs POST requests with a string payload", () => {
+    // Arrange
+    const data = "foobar";
+    const request: AxiosRequestConfig = {
+      method: "POST",
+      url: "https://example.com/foobar",
+      data
+    };
+
+    const interceptor = aws4Interceptor({
+      region: "local",
+      service: "execute-api"
+    });
+
+    // Act
+    interceptor(request);
+
+    // Assert
+    expect(sign).toBeCalledWith({
+      headers: {},
+      service: "execute-api",
+      path: "/foobar",
+      region: "local",
+      host: "example.com",
+      body: "foobar"
+    });
+  });
 });

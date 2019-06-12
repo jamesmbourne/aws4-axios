@@ -52,7 +52,8 @@ export const aws4Interceptor = (options?: InterceptorOptions) => (
     headers: {},
     region,
     service,
-    signQuery
+    ...(signQuery !== undefined ? { signQuery } : {}),
+    body: getBody(config.data)
   };
 
   sign(signingOptions);
@@ -60,6 +61,14 @@ export const aws4Interceptor = (options?: InterceptorOptions) => (
   config.headers = signingOptions.headers;
 
   return config;
+};
+
+const getBody = (data: any) => {
+  if (typeof data === "string") {
+    return data;
+  }
+
+  return JSON.stringify(data);
 };
 
 /**

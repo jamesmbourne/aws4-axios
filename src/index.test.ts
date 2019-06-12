@@ -5,6 +5,10 @@ import { aws4Interceptor } from ".";
 jest.mock("aws4");
 
 describe("interceptor", () => {
+  beforeEach(() => {
+    (sign as jest.Mock).mockReset();
+  });
+
   it("signs GET requests", () => {
     // Arrange
     const request: AxiosRequestConfig = {
@@ -25,6 +29,31 @@ describe("interceptor", () => {
       headers: {},
       service: "execute-api",
       path: "/foobar",
+      region: "local",
+      host: "example.com"
+    });
+  });
+
+  it("signs query paremeters in GET requests", () => {
+    // Arrange
+    const request: AxiosRequestConfig = {
+      method: "GET",
+      url: "https://example.com/foobar?foo=bar"
+    };
+
+    const interceptor = aws4Interceptor({
+      region: "local",
+      service: "execute-api"
+    });
+
+    // Act
+    interceptor(request);
+
+    // Assert
+    expect(sign).toBeCalledWith({
+      headers: {},
+      service: "execute-api",
+      path: "/foobar?foo=bar",
       region: "local",
       host: "example.com"
     });

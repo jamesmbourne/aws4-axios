@@ -1,5 +1,6 @@
 import { sign } from "aws4";
-import { AxiosRequestConfig, Method } from "axios";
+import { AxiosRequestConfig } from "axios";
+import axios from "axios";
 import { URL } from "url";
 
 export interface InterceptorOptions {
@@ -48,6 +49,10 @@ export const aws4Interceptor = (options?: InterceptorOptions) => (
     ({ region, service } = options);
   }
 
+  const transformRequest = getTransformer();
+
+  const transformedData = transformRequest(data, headers);
+
   // Remove all the default Axios headers
   const {
     common,
@@ -67,7 +72,7 @@ export const aws4Interceptor = (options?: InterceptorOptions) => (
     region,
     service,
     ...(signQuery !== undefined ? { signQuery } : {}),
-    body: getBody(data),
+    body: transformedData,
     headers: headersToSign
   };
 
@@ -78,10 +83,18 @@ export const aws4Interceptor = (options?: InterceptorOptions) => (
   return config;
 };
 
-const getBody = (data: any) => {
-  if (typeof data === "string") {
-    return data;
+const getTransformer = () => {
+  const { transformRequest } = axios.defaults;
+
+  if (transformRequest) {
+    if (typeof transformRequest === "function") {
+      return transformRequest;
+    } else if (transformRequest.length) {
+      return transformRequest[0];
+    }
   }
 
-  return JSON.stringify(data);
+  throw new Error(
+    "Could not get default transformRequest function from Axios defaults"
+  );
 };

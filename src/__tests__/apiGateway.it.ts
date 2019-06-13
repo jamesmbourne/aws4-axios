@@ -110,4 +110,31 @@ describe("API Gateway integration", () => {
     expect(message).toBe(undefined);
     expect(result && result.status).toEqual(200);
   });
+
+  it("sets content type as application/json when the body is an object", async () => {
+    const client = axios.create();
+
+    const data = {
+      foo: "bar"
+    };
+
+    client.interceptors.request.use(
+      aws4Interceptor({ region: "eu-west-2", service: "execute-api" })
+    );
+
+    let message;
+    let result;
+    try {
+      result = await client.request({
+        url: apiGateway,
+        method: "POST",
+        data
+      });
+    } catch (err) {
+      message = getAuthErrorMessage(err);
+    }
+
+    expect(message).toBe(undefined);
+    expect(result && result.status).toEqual(200);
+  });
 });

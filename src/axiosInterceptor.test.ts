@@ -34,4 +34,46 @@ describe("axios interceptor", () => {
     expect(request.headers["X-Custom-Header"]).toEqual("foo");
     expect(request.headers["Authorization"]).toContain("AWS");
   });
+
+  it("should preserve default headers - without interceptor", async () => {
+    // Arrange
+    const client = axios.create();
+
+    const data = { foo: "bar" };
+
+    const url = "https://localhost/foo";
+
+    moxios.stubOnce("POST", url, {});
+
+    // Act
+    await client.post(url, data, {});
+
+    // Assert
+    const request = moxios.requests.first();
+    expect(request.headers["Content-Type"]).toEqual(
+      "application/json;charset=utf-8"
+    );
+  });
+
+  it("should preserve default headers - with interceptor", async () => {
+    // Arrange
+    const client = axios.create();
+
+    client.interceptors.request.use(aws4Interceptor({ region: "local" }));
+
+    const data = { foo: "bar" };
+
+    const url = "https://localhost/foo";
+
+    moxios.stubOnce("POST", url, {});
+
+    // Act
+    await client.post(url, data, {});
+
+    // Assert
+    const request = moxios.requests.first();
+    expect(request.headers["Content-Type"]).toEqual(
+      "application/json;charset=utf-8"
+    );
+  });
 });

@@ -48,6 +48,18 @@ export const aws4Interceptor = (options?: InterceptorOptions) => (
     ({ region, service } = options);
   }
 
+  // Remove all the default Axios headers
+  const {
+    common,
+    delete: _delete, // 'delete' is a reserved word
+    get,
+    head,
+    post,
+    put,
+    patch,
+    ...headersToSign
+  } = headers;
+
   const signingOptions: SigningOptions = {
     method: method && method.toUpperCase(),
     host,
@@ -55,12 +67,13 @@ export const aws4Interceptor = (options?: InterceptorOptions) => (
     region,
     service,
     ...(signQuery !== undefined ? { signQuery } : {}),
-    body: getBody(data)
+    body: getBody(data),
+    headers: headersToSign
   };
 
   sign(signingOptions);
 
-  config.headers = signingOptions.headers;
+  config.headers = { ...signingOptions.headers, ...config.headers };
 
   return config;
 };

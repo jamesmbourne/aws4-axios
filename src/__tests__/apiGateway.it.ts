@@ -72,7 +72,35 @@ describe("API Gateway integration", () => {
       result = await client.request({
         url: apiGateway,
         method: "POST",
-        headers: { "Content-Type": "Baz" },
+        headers: { "X-Custom-Header": "Baz" },
+        data
+      });
+    } catch (err) {
+      message = getAuthErrorMessage(err);
+    }
+
+    expect(message).toBe(undefined);
+    expect(result && result.status).toEqual(200);
+  });
+
+  it("handles custom Content-Type header", async () => {
+    const client = axios.create();
+
+    const data = {
+      foo: "bar"
+    };
+
+    client.interceptors.request.use(
+      aws4Interceptor({ region: "eu-west-2", service: "execute-api" })
+    );
+
+    let message;
+    let result;
+    try {
+      result = await client.request({
+        url: apiGateway,
+        method: "POST",
+        headers: { "Content-Type": "application/xml" },
         data
       });
     } catch (err) {

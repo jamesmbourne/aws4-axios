@@ -5,6 +5,16 @@ import { aws4Interceptor } from ".";
 jest.mock("aws4");
 
 describe("interceptor", () => {
+  const getDefaultHeaders = () => ({
+    common: { Accept: "application/json, text/plain, */*" },
+    delete: {},
+    get: {},
+    head: {},
+    post: { "Content-Type": "application/x-www-form-urlencoded" },
+    put: { "Content-Type": "application/x-www-form-urlencoded" },
+    patch: { "Content-Type": "application/x-www-form-urlencoded" }
+  });
+
   beforeEach(() => {
     (sign as jest.Mock).mockReset();
   });
@@ -13,7 +23,8 @@ describe("interceptor", () => {
     // Arrange
     const request: AxiosRequestConfig = {
       method: "GET",
-      url: "https://example.com/foobar"
+      url: "https://example.com/foobar",
+      headers: getDefaultHeaders()
     };
 
     const interceptor = aws4Interceptor({
@@ -30,7 +41,8 @@ describe("interceptor", () => {
       path: "/foobar",
       method: "GET",
       region: "local",
-      host: "example.com"
+      host: "example.com",
+      headers: {}
     });
   });
 
@@ -38,7 +50,8 @@ describe("interceptor", () => {
     // Arrange
     const request: AxiosRequestConfig = {
       method: "GET",
-      url: "https://example.com/foobar?foo=bar"
+      url: "https://example.com/foobar?foo=bar",
+      headers: getDefaultHeaders()
     };
 
     const interceptor = aws4Interceptor({
@@ -55,7 +68,8 @@ describe("interceptor", () => {
       path: "/foobar?foo=bar",
       method: "GET",
       region: "local",
-      host: "example.com"
+      host: "example.com",
+      headers: {}
     });
   });
 
@@ -66,7 +80,8 @@ describe("interceptor", () => {
     const request: AxiosRequestConfig = {
       method: "POST",
       url: "https://example.com/foobar",
-      data
+      data,
+      headers: getDefaultHeaders()
     };
 
     const interceptor = aws4Interceptor({
@@ -84,7 +99,8 @@ describe("interceptor", () => {
       method: "POST",
       region: "local",
       host: "example.com",
-      body: '{"foo":"bar"}'
+      body: '{"foo":"bar"}',
+      headers: {}
     });
   });
 
@@ -94,7 +110,8 @@ describe("interceptor", () => {
     const request: AxiosRequestConfig = {
       method: "POST",
       url: "https://example.com/foobar",
-      data
+      data,
+      headers: getDefaultHeaders()
     };
 
     const interceptor = aws4Interceptor({
@@ -112,7 +129,38 @@ describe("interceptor", () => {
       path: "/foobar",
       region: "local",
       host: "example.com",
-      body: "foobar"
+      body: "foobar",
+      headers: {}
+    });
+  });
+
+  it("passes Content-Type header to be signed", () => {
+    // Arrange
+    const data = "foobar";
+    const request: AxiosRequestConfig = {
+      method: "POST",
+      url: "https://example.com/foobar",
+      data,
+      headers: { ...getDefaultHeaders(), "Content-Type": "application/xml" }
+    };
+
+    const interceptor = aws4Interceptor({
+      region: "local",
+      service: "execute-api"
+    });
+
+    // Act
+    interceptor(request);
+
+    // Assert
+    expect(sign).toBeCalledWith({
+      service: "execute-api",
+      method: "POST",
+      path: "/foobar",
+      region: "local",
+      host: "example.com",
+      body: "foobar",
+      headers: { "Content-Type": "application/xml" }
     });
   });
 });

@@ -49,7 +49,7 @@ export const aws4Interceptor = (options?: InterceptorOptions) => (
     ({ region, service } = options);
   }
 
-  const transformRequest = getTransformer();
+  const transformRequest = getTransformer(config);
 
   const transformedData = transformRequest(data, headers);
 
@@ -83,8 +83,8 @@ export const aws4Interceptor = (options?: InterceptorOptions) => (
   return config;
 };
 
-const getTransformer = () => {
-  const { transformRequest } = axios.defaults;
+const getTransformer = (config: AxiosRequestConfig) => {
+  const { transformRequest } = config;
 
   if (transformRequest) {
     if (typeof transformRequest === "function") {

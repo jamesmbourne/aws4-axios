@@ -78,7 +78,7 @@ export const aws4Interceptor = (options?: InterceptorOptions) => (
 
   sign(signingOptions);
 
-  config.headers = { ...signingOptions.headers, ...config.headers };
+  config.headers = signingOptions.headers;
 
   return config;
 };

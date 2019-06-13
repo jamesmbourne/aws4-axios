@@ -1,5 +1,5 @@
 import { sign } from "aws4";
-import { AxiosRequestConfig } from "axios";
+import axios, { AxiosRequestConfig } from "axios";
 import { aws4Interceptor } from ".";
 
 jest.mock("aws4");
@@ -15,6 +15,8 @@ describe("interceptor", () => {
     patch: { "Content-Type": "application/x-www-form-urlencoded" }
   });
 
+  const getDefaultTransformRequest = () => axios.defaults.transformRequest;
+
   beforeEach(() => {
     (sign as jest.Mock).mockReset();
   });
@@ -24,7 +26,8 @@ describe("interceptor", () => {
     const request: AxiosRequestConfig = {
       method: "GET",
       url: "https://example.com/foobar",
-      headers: getDefaultHeaders()
+      headers: getDefaultHeaders(),
+      transformRequest: getDefaultTransformRequest()
     };
 
     const interceptor = aws4Interceptor({
@@ -51,7 +54,8 @@ describe("interceptor", () => {
     const request: AxiosRequestConfig = {
       method: "GET",
       url: "https://example.com/foobar?foo=bar",
-      headers: getDefaultHeaders()
+      headers: getDefaultHeaders(),
+      transformRequest: getDefaultTransformRequest()
     };
 
     const interceptor = aws4Interceptor({
@@ -81,7 +85,8 @@ describe("interceptor", () => {
       method: "POST",
       url: "https://example.com/foobar",
       data,
-      headers: getDefaultHeaders()
+      headers: getDefaultHeaders(),
+      transformRequest: getDefaultTransformRequest()
     };
 
     const interceptor = aws4Interceptor({
@@ -111,7 +116,8 @@ describe("interceptor", () => {
       method: "POST",
       url: "https://example.com/foobar",
       data,
-      headers: getDefaultHeaders()
+      headers: getDefaultHeaders(),
+      transformRequest: getDefaultTransformRequest()
     };
 
     const interceptor = aws4Interceptor({
@@ -141,7 +147,8 @@ describe("interceptor", () => {
       method: "POST",
       url: "https://example.com/foobar",
       data,
-      headers: { ...getDefaultHeaders(), "Content-Type": "application/xml" }
+      headers: { ...getDefaultHeaders(), "Content-Type": "application/xml" },
+      transformRequest: getDefaultTransformRequest()
     };
 
     const interceptor = aws4Interceptor({

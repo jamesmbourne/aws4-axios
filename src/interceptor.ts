@@ -1,6 +1,7 @@
 import { sign } from "aws4";
 import { AxiosRequestConfig } from "axios";
-import axios from "axios";
+import combineURLs from "axios/lib/helpers/combineURLs";
+import isAbsoluteURL from "axios/lib/helpers/isAbsoluteURL";
 import { URL } from "url";
 
 export interface InterceptorOptions {
@@ -38,7 +39,13 @@ export const aws4Interceptor = (options?: InterceptorOptions) => (
     throw new Error("No URL present in request config, unable to sign request");
   }
 
-  const { host, pathname, search } = new URL(config.url);
+  let url = config.url;
+
+  if (config.baseURL && !isAbsoluteURL(config.url)) {
+    url = combineURLs(config.baseURL, config.url);
+  }
+
+  const { host, pathname, search } = new URL(url);
   const { data, headers, method } = config;
 
   let region: string | undefined;

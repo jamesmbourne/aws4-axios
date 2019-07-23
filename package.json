@@ -19,6 +19,11 @@
     "axios",
     "interceptor"
   ],
+  "resolutions": {
+    "lodash": "4.17.15",
+    "mixin-deep": "2.0.1",
+    "set-value": "3.0.1"
+  },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -28,15 +33,15 @@
     "test-it": "jest --config jest.config.it.js"
   },
   "devDependencies": {
-    "@types/jest": "^24.0.13",
+    "@types/jest": "^24.0.15",
     "@types/moxios": "^0.4.8",
-    "@types/node": "^12.0.4",
-    "eslint": "^5.16.0",
+    "@types/node": "^12.6.8",
+    "eslint": "^6.1.0",
     "jest": "^24.8.0",
     "jest-junit": "^6.4.0",
     "moxios": "^0.4.0",
     "ts-jest": "^24.0.2",
-    "typescript": "^3.5.1"
+    "typescript": "^3.5.3"
   },
   "dependencies": {
     "@types/aws4": "^1.5.1",

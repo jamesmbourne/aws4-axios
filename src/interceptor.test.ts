@@ -170,4 +170,36 @@ describe("interceptor", () => {
       headers: { "Content-Type": "application/xml" }
     });
   });
+
+  it("works with baseURL config", () => {
+    // Arrange
+    const data = "foobar";
+    const request: AxiosRequestConfig = {
+      method: "POST",
+      baseURL: "https://example.com/foo",
+      url: "bar",
+      data,
+      headers: { ...getDefaultHeaders(), "Content-Type": "application/xml" },
+      transformRequest: getDefaultTransformRequest()
+    };
+
+    const interceptor = aws4Interceptor({
+      region: "local",
+      service: "execute-api"
+    });
+
+    // Act
+    interceptor(request);
+
+    // Assert
+    expect(sign).toBeCalledWith({
+      service: "execute-api",
+      method: "POST",
+      path: "/foo/bar",
+      region: "local",
+      host: "example.com",
+      body: "foobar",
+      headers: { "Content-Type": "application/xml" }
+    });
+  });
 });

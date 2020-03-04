@@ -55,3 +55,15 @@ client.get("https://example.com/foo").then(res => {
   // ...
 });
 ```
+
+You can also pass AWS credentials in explicitly (otherwise taken from process.env)
+
+```typescript
+const interceptor = aws4Interceptor({
+  region: "eu-west-2",
+  service: "execute-api"
+}, {
+  accessKeyId: '',
+  secretAccessKey: ''
+});
+```

@@ -21,6 +21,12 @@ export interface SigningOptions {
   method?: string;
 }
 
+export interface Credentials {
+  accessKeyId: string;
+  secretAccessKey: string;
+  sessionToken?: string;
+}
+
 /**
  * Create an interceptor to add to the Axios request chain. This interceptor
  * will sign requests with the AWSv4 signature.
@@ -32,7 +38,7 @@ export interface SigningOptions {
  *
  * @param options The options to be used when signing a request
  */
-export const aws4Interceptor = (options?: InterceptorOptions) => (
+export const aws4Interceptor = (options?: InterceptorOptions, credentials?: Credentials) => (
   config: AxiosRequestConfig
 ) => {
   if (!config.url) {
@@ -83,7 +89,7 @@ export const aws4Interceptor = (options?: InterceptorOptions) => (
     headers: headersToSign
   };
 
-  sign(signingOptions);
+  sign(signingOptions, credentials);
 
   config.headers = signingOptions.headers;
 

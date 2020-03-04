@@ -46,7 +46,7 @@ describe("interceptor", () => {
       region: "local",
       host: "example.com",
       headers: {}
-    });
+    }, undefined);
   });
 
   it("signs query paremeters in GET requests", () => {
@@ -74,7 +74,7 @@ describe("interceptor", () => {
       region: "local",
       host: "example.com",
       headers: {}
-    });
+    }, undefined);
   });
 
   it("signs POST requests with an object payload", () => {
@@ -106,7 +106,7 @@ describe("interceptor", () => {
       host: "example.com",
       body: '{"foo":"bar"}',
       headers: { "Content-Type": "application/json;charset=utf-8" }
-    });
+    }, undefined);
   });
 
   it("signs POST requests with a string payload", () => {
@@ -137,7 +137,7 @@ describe("interceptor", () => {
       host: "example.com",
       body: "foobar",
       headers: {}
-    });
+    }, undefined);
   });
 
   it("passes Content-Type header to be signed", () => {
@@ -168,7 +168,7 @@ describe("interceptor", () => {
       host: "example.com",
       body: "foobar",
       headers: { "Content-Type": "application/xml" }
-    });
+    }, undefined);
   });
 
   it("works with baseURL config", () => {
@@ -200,6 +200,42 @@ describe("interceptor", () => {
       host: "example.com",
       body: "foobar",
       headers: { "Content-Type": "application/xml" }
+    }, undefined);
+  });
+
+  it("passes the credentials", () => {
+    // Arrange
+    const request: AxiosRequestConfig = {
+      method: "GET",
+      url: "https://example.com/foobar",
+      headers: getDefaultHeaders(),
+      transformRequest: getDefaultTransformRequest()
+    };
+
+    const interceptor = aws4Interceptor({
+      region: "local",
+      service: "execute-api"
+    }, {
+      accessKeyId: 'access-key-id',
+      secretAccessKey: 'secret-access-key',
+      sessionToken: 'session-token'
+    });
+
+    // Act
+    interceptor(request);
+
+    // Assert
+    expect(sign).toBeCalledWith({
+      service: "execute-api",
+      path: "/foobar",
+      method: "GET",
+      region: "local",
+      host: "example.com",
+      headers: {}
+    }, {
+      accessKeyId: 'access-key-id',
+      secretAccessKey: 'secret-access-key',
+      sessionToken: 'session-token'
     });
   });
 });

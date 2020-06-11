@@ -45,14 +45,14 @@ export const aws4Interceptor = (options?: InterceptorOptions, credentials?: Cred
     throw new Error("No URL present in request config, unable to sign request");
   }
 
+ 
+  let url = config.url;
 
   if (config.baseURL && !isAbsoluteURL(config.url)) {
     url = combineURLs(config.baseURL, config.url);
   }
 
   const URL = customURL.URL || customURL.Url;
-  let url = config.url;
-
   const { host, pathname, search } = new URL(url);
   const { data, headers, method } = config;
 

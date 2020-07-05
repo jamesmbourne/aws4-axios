@@ -27,7 +27,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "prepare": "tsc",
+    "build": "tsc",
     "test": "jest",
     "test-ci": "jest --config jest.config.ci.js",
     "test-it": "jest --config jest.config.it.js"

@@ -2,7 +2,6 @@ import { sign } from "aws4";
 import { AxiosRequestConfig } from "axios";
 import combineURLs from "axios/lib/helpers/combineURLs";
 import isAbsoluteURL from "axios/lib/helpers/isAbsoluteURL";
-import { URL } from "url";
 
 export interface InterceptorOptions {
   service?: string;

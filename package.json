@@ -46,6 +46,6 @@
   "dependencies": {
     "@types/aws4": "^1.5.1",
     "aws4": "^1.9.1",
-    "axios": "^0.19.2"
+    "axios": "^0.21.0"
   }
 }

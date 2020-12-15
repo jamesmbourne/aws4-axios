@@ -34,7 +34,7 @@
     "test-it": "jest --config jest.config.it.js"
   },
   "devDependencies": {
-    "@types/jest": "^25.2.1",
+    "@types/jest": "^26.0.19",
     "@types/moxios": "^0.4.9",
     "@types/node": "^13.13.4",
     "axios": "^0.21.0",

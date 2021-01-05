@@ -2,8 +2,6 @@ import moxios from "moxios";
 import axios from "axios";
 import aws4Interceptor from ".";
 
-jest.setTimeout(1000000)
-
 describe("axios interceptor", () => {
   beforeEach(() => {
     moxios.install();
@@ -13,7 +11,7 @@ describe("axios interceptor", () => {
     moxios.uninstall();
   });
   
-  it("should not mutate config object", async () => {
+  it("should not mutate request config object", async () => {
     // Arrange
     const client = axios.create();
 

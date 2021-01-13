@@ -10,7 +10,7 @@ declare module "axios/lib/helpers/isAbsoluteURL" {
   export default combineURLs;
 }
 
-declare module "axios/lib/helpers/buildUrl" {
+declare module "axios/lib/helpers/buildURL" {
   function buildURL(
     url: string | undefined,
     params: any,

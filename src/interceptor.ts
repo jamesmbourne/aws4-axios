@@ -1,6 +1,6 @@
 import { AxiosRequestConfig } from "axios";
 import { sign } from "aws4";
-import buildUrl from "axios/lib/helpers/buildUrl";
+import buildUrl from "axios/lib/helpers/buildURL";
 import combineURLs from "axios/lib/helpers/combineURLs";
 import isAbsoluteURL from "axios/lib/helpers/isAbsoluteURL";
 
@@ -73,7 +73,8 @@ export const aws4Interceptor = (options?: InterceptorOptions, credentials?: Cred
 
   // Remove all the default Axios headers
   const {
-    common,
+    common
+    ,
     delete: _delete, // 'delete' is a reserved word
     get,
     head,

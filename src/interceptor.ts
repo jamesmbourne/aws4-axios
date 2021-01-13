@@ -38,18 +38,19 @@ export interface Credentials {
  *
  * @param options The options to be used when signing a request
  */
-export const aws4Interceptor = (options?: InterceptorOptions, credentials?: Credentials) => (
-  config: AxiosRequestConfig
-) => {
+export const aws4Interceptor = (
+  options?: InterceptorOptions,
+  credentials?: Credentials
+) => (config: AxiosRequestConfig) => {
   if (!config.url) {
     throw new Error("No URL present in request config, unable to sign request");
   }
 
-  if(config.params) {
+  if (config.params) {
     config.url = buildUrl(config.url, config.params, config.paramsSerializer);
     delete config.params;
   }
-  
+
   let url = config.url;
 
   if (config.baseURL && !isAbsoluteURL(config.url)) {
@@ -73,8 +74,7 @@ export const aws4Interceptor = (options?: InterceptorOptions, credentials?: Cred
 
   // Remove all the default Axios headers
   const {
-    common
-    ,
+    common,
     delete: _delete, // 'delete' is a reserved word
     get,
     head,
@@ -92,7 +92,7 @@ export const aws4Interceptor = (options?: InterceptorOptions, credentials?: Cred
     service,
     ...(signQuery !== undefined ? { signQuery } : {}),
     body: transformedData,
-    headers: headersToSign
+    headers: headersToSign,
   };
 
   sign(signingOptions, credentials);

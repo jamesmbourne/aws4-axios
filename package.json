@@ -30,7 +30,6 @@
   "scripts": {
     "build": "tsc",
     "test": "jest",
-    "test-ci": "jest --config jest.config.ci.js",
     "test-it": "jest --config jest.config.it.js"
   },
   "devDependencies": {

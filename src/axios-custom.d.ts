@@ -9,3 +9,12 @@ declare module "axios/lib/helpers/isAbsoluteURL" {
 
   export default combineURLs;
 }
+
+declare module "axios/lib/helpers/buildUrl" {
+  function buildURL(
+    url: string | undefined,
+    params: any,
+    paramsSerializer: ((params: any) => string) | undefined
+  ): string;
+  export default buildURL;
+}

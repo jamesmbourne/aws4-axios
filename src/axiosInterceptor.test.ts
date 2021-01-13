@@ -10,7 +10,30 @@ describe("axios interceptor", () => {
   afterEach(() => {
     moxios.uninstall();
   });
+  
+  it("should not mutate request config object", async () => {
+    // Arrange
+    const client = axios.create();
 
+    client.interceptors.request.use(aws4Interceptor({ region: "local" }));
+
+    const url = "https://localhost/foo";
+    const config = {
+      headers: { "X-Custom-Header": "foo", "Content-Type": "application/json" },
+      params: {foo: "bar"}
+    }
+
+    moxios.stubOnce("GET", /./, {});
+
+    // Act
+    await client.get(url, config);
+
+    // Assert
+    const request = moxios.requests.first();
+    expect(request.url).toBe(`${url}?foo=bar`)
+    expect(config.params).toStrictEqual({foo: "bar"})
+  });
+  
   it("should preserve headers", async () => {
     // Arrange
     const client = axios.create();

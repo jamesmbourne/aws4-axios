@@ -49,11 +49,40 @@ describe("interceptor", () => {
     }, undefined);
   });
 
-  it("signs query paremeters in GET requests", () => {
+  it("signs url query paremeters in GET requests", () => {
     // Arrange
     const request: AxiosRequestConfig = {
       method: "GET",
       url: "https://example.com/foobar?foo=bar",
+      headers: getDefaultHeaders(),
+      transformRequest: getDefaultTransformRequest()
+    };
+
+    const interceptor = aws4Interceptor({
+      region: "local",
+      service: "execute-api"
+    });
+
+    // Act
+    interceptor(request);
+
+    // Assert
+    expect(sign).toBeCalledWith({
+      service: "execute-api",
+      path: "/foobar?foo=bar",
+      method: "GET",
+      region: "local",
+      host: "example.com",
+      headers: {}
+    }, undefined);
+  });
+
+  it("signs query paremeters in GET requests", () => {
+    // Arrange
+    const request: AxiosRequestConfig = {
+      method: "GET",
+      url: "https://example.com/foobar",
+      params: {foo: "bar"},
       headers: getDefaultHeaders(),
       transformRequest: getDefaultTransformRequest()
     };

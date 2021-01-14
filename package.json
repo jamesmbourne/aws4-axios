@@ -30,7 +30,8 @@
   "scripts": {
     "build": "tsc",
     "test": "jest",
-    "test-it": "jest --config jest.config.it.js"
+    "test-it": "jest --config jest.config.it.js",
+    "prepublishOnly": "npm run build"
   },
   "devDependencies": {
     "@types/jest": "^25.2.1",

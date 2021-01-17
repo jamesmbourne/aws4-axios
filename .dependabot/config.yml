@@ -1,12 +1,9 @@
-version: 2
-updates:
-  - package-ecosystem: npm
+version: 1
+update_configs:
+  - package_manager: "javascript"
     directory: "/"
-    schedule:
-      interval: daily
-      time: "04:00"
-    open-pull-requests-limit: 10
-    commit-message:
-      prefix: fix
-      prefix-development: chore
-      include: scope
+    update_schedule: "daily"
+    commit_message:
+      prefix: "fix"
+      prefix_development: "chore"
+      include_scope: true

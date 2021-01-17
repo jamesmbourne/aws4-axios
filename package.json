@@ -32,17 +32,26 @@
     "test": "jest",
     "test-it": "jest --config jest.config.it.js",
     "prepublishOnly": "npm run build",
-    "semantic-release": "semantic-release"
+    "semantic-release": "semantic-release",
+    "lint:eslint": "eslint . --cache --ext .ts,.tsx",
+    "lint:prettier": "prettier --check .",
+    "lint": "run-s lint:*"
   },
   "devDependencies": {
     "@types/jest": "^26.0.20",
     "@types/moxios": "^0.4.9",
     "@types/node": "^14.14.21",
+    "@typescript-eslint/eslint-plugin": "^4.13.0",
+    "@typescript-eslint/parser": "^4.13.0",
     "axios": "^0.21.0",
     "eslint": "^6.8.0",
+    "eslint-config-prettier": "^7.1.0",
+    "husky": ">=4",
     "jest": "^25.4.0",
-    "jest-junit": "^10.0.0",
+    "lint-staged": ">=10",
     "moxios": "^0.4.0",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^2.2.1",
     "semantic-release": "^17.3.3",
     "ts-jest": "^25.4.0",
     "typescript": "^3.8.3"
@@ -53,5 +62,16 @@
   },
   "peerDependencies": {
     "axios": ">0.19.2 < 0.22.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "eslint --cache --fix",
+      "prettier --write"
+    ]
   }
 }

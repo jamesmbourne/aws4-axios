@@ -10,7 +10,7 @@ describe("axios interceptor", () => {
   afterEach(() => {
     moxios.uninstall();
   });
-  
+
   it("should not mutate request config object", async () => {
     // Arrange
     const client = axios.create();
@@ -20,8 +20,8 @@ describe("axios interceptor", () => {
     const url = "https://localhost/foo";
     const config = {
       headers: { "X-Custom-Header": "foo", "Content-Type": "application/json" },
-      params: {foo: "bar"}
-    }
+      params: { foo: "bar" },
+    };
 
     moxios.stubOnce("GET", /./, {});
 
@@ -30,10 +30,10 @@ describe("axios interceptor", () => {
 
     // Assert
     const request = moxios.requests.first();
-    expect(request.url).toBe(`${url}?foo=bar`)
-    expect(config.params).toStrictEqual({foo: "bar"})
+    expect(request.url).toBe(`${url}?foo=bar`);
+    expect(config.params).toStrictEqual({ foo: "bar" });
   });
-  
+
   it("should preserve headers", async () => {
     // Arrange
     const client = axios.create();
@@ -48,7 +48,7 @@ describe("axios interceptor", () => {
 
     // Act
     await client.post(url, data, {
-      headers: { "X-Custom-Header": "foo", "Content-Type": "application/json" }
+      headers: { "X-Custom-Header": "foo", "Content-Type": "application/json" },
     });
 
     // Assert

@@ -12,9 +12,9 @@ export interface InterceptorOptions {
 
 export interface SigningOptions {
   host?: string;
-  headers?: {};
+  headers?: unknown;
   path?: string;
-  body?: any;
+  body?: unknown;
   region?: string;
   service?: string;
   signQuery?: boolean;
@@ -41,7 +41,7 @@ export interface Credentials {
 export const aws4Interceptor = (
   options?: InterceptorOptions,
   credentials?: Credentials
-) => (config: AxiosRequestConfig) => {
+) => (config: AxiosRequestConfig): AxiosRequestConfig => {
   if (!config.url) {
     throw new Error("No URL present in request config, unable to sign request");
   }

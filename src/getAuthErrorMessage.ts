@@ -8,7 +8,7 @@ interface APIGatewayAuthResponse {
  *
  * @param error The error thrown by Axios
  */
-export const getAuthErrorMessage = (error: AxiosError) => {
+export const getAuthErrorMessage = (error: AxiosError): string | undefined => {
   const data: APIGatewayAuthResponse = error.response && error.response.data;
 
   if (data) {

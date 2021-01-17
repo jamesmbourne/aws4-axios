@@ -17,8 +17,6 @@ describe("getAuthErrorMessage", () => {
 
   it("should return undefined if no error is present", () => {
     // Arrange
-    const message = "Fake envalid credentials error";
-
     const error = { response: {} };
 
     // Act

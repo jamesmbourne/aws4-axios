@@ -43,9 +43,9 @@
     "jest": "^25.4.0",
     "jest-junit": "^10.0.0",
     "moxios": "^0.4.0",
+    "semantic-release": "^17.3.3",
     "ts-jest": "^25.4.0",
-    "typescript": "^3.8.3",
-    "semantic-release": "^17.3.3"
+    "typescript": "^3.8.3"
   },
   "dependencies": {
     "@types/aws4": "^1.5.1",

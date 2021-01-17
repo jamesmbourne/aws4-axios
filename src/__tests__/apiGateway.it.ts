@@ -1,5 +1,5 @@
 import axios, { Method } from "axios";
-import { interceptor as aws4Interceptor } from "..";
+import { aws4Interceptor } from "..";
 import { getAuthErrorMessage } from "..";
 
 const methods: Method[] = ["GET", "DELETE"];
@@ -32,7 +32,7 @@ describe("API Gateway integration", () => {
     const client = axios.create();
 
     const data = {
-      foo: "bar"
+      foo: "bar",
     };
 
     client.interceptors.request.use(
@@ -45,7 +45,7 @@ describe("API Gateway integration", () => {
       result = await client.request({
         url: apiGateway,
         method,
-        data
+        data,
       });
     } catch (err) {
       message = getAuthErrorMessage(err);
@@ -59,7 +59,7 @@ describe("API Gateway integration", () => {
     const client = axios.create();
 
     const data = {
-      foo: "bar"
+      foo: "bar",
     };
 
     client.interceptors.request.use(
@@ -73,7 +73,7 @@ describe("API Gateway integration", () => {
         url: apiGateway,
         method: "POST",
         headers: { "X-Custom-Header": "Baz" },
-        data
+        data,
       });
     } catch (err) {
       message = getAuthErrorMessage(err);
@@ -87,7 +87,7 @@ describe("API Gateway integration", () => {
     const client = axios.create();
 
     const data = {
-      foo: "bar"
+      foo: "bar",
     };
 
     client.interceptors.request.use(
@@ -101,7 +101,7 @@ describe("API Gateway integration", () => {
         url: apiGateway,
         method: "POST",
         headers: { "Content-Type": "application/xml" },
-        data
+        data,
       });
     } catch (err) {
       message = getAuthErrorMessage(err);
@@ -115,7 +115,7 @@ describe("API Gateway integration", () => {
     const client = axios.create();
 
     const data = {
-      foo: "bar"
+      foo: "bar",
     };
 
     client.interceptors.request.use(
@@ -128,7 +128,7 @@ describe("API Gateway integration", () => {
       result = await client.request({
         url: apiGateway,
         method: "POST",
-        data
+        data,
       });
     } catch (err) {
       message = getAuthErrorMessage(err);

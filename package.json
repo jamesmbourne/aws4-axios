@@ -35,7 +35,7 @@
     "semantic-release": "semantic-release"
   },
   "devDependencies": {
-    "@types/jest": "^25.2.1",
+    "@types/jest": "^26.0.20",
     "@types/moxios": "^0.4.9",
     "@types/node": "^13.13.4",
     "axios": "^0.21.0",

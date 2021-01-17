@@ -1,4 +1,8 @@
-import { aws4Interceptor } from "./interceptor";
+import {
+  aws4Interceptor,
+  Credentials,
+  InterceptorOptions,
+} from "./interceptor";
 import { getAuthErrorMessage } from "./getAuthErrorMessage";
 
 /**
@@ -8,4 +12,9 @@ export const interceptor = aws4Interceptor;
 
 export default aws4Interceptor;
 
-export { getAuthErrorMessage, aws4Interceptor };
+export {
+  getAuthErrorMessage,
+  aws4Interceptor,
+  Credentials,
+  InterceptorOptions,
+};

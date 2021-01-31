@@ -21,7 +21,7 @@ describe("interceptor", () => {
     (sign as jest.Mock).mockReset();
   });
 
-  it("signs GET requests", () => {
+  it("signs GET requests", async () => {
     // Arrange
     const request: AxiosRequestConfig = {
       method: "GET",
@@ -36,7 +36,7 @@ describe("interceptor", () => {
     });
 
     // Act
-    interceptor(request);
+    await interceptor(request);
 
     // Assert
     expect(sign).toBeCalledWith(
@@ -52,7 +52,7 @@ describe("interceptor", () => {
     );
   });
 
-  it("signs url query paremeters in GET requests", () => {
+  it("signs url query paremeters in GET requests", async () => {
     // Arrange
     const request: AxiosRequestConfig = {
       method: "GET",
@@ -67,7 +67,7 @@ describe("interceptor", () => {
     });
 
     // Act
-    interceptor(request);
+    await interceptor(request);
 
     // Assert
     expect(sign).toBeCalledWith(
@@ -83,7 +83,7 @@ describe("interceptor", () => {
     );
   });
 
-  it("signs query paremeters in GET requests", () => {
+  it("signs query paremeters in GET requests", async () => {
     // Arrange
     const request: AxiosRequestConfig = {
       method: "GET",
@@ -99,7 +99,7 @@ describe("interceptor", () => {
     });
 
     // Act
-    interceptor(request);
+    await interceptor(request);
 
     // Assert
     expect(sign).toBeCalledWith(
@@ -115,7 +115,7 @@ describe("interceptor", () => {
     );
   });
 
-  it("signs POST requests with an object payload", () => {
+  it("signs POST requests with an object payload", async () => {
     // Arrange
     const data = { foo: "bar" };
 
@@ -133,7 +133,7 @@ describe("interceptor", () => {
     });
 
     // Act
-    interceptor(request);
+    await interceptor(request);
 
     // Assert
     expect(sign).toBeCalledWith(
@@ -150,7 +150,7 @@ describe("interceptor", () => {
     );
   });
 
-  it("signs POST requests with a string payload", () => {
+  it("signs POST requests with a string payload", async () => {
     // Arrange
     const data = "foobar";
     const request: AxiosRequestConfig = {
@@ -167,7 +167,7 @@ describe("interceptor", () => {
     });
 
     // Act
-    interceptor(request);
+    await interceptor(request);
 
     // Assert
     expect(sign).toBeCalledWith(
@@ -184,7 +184,7 @@ describe("interceptor", () => {
     );
   });
 
-  it("passes Content-Type header to be signed", () => {
+  it("passes Content-Type header to be signed", async () => {
     // Arrange
     const data = "foobar";
     const request: AxiosRequestConfig = {
@@ -201,7 +201,7 @@ describe("interceptor", () => {
     });
 
     // Act
-    interceptor(request);
+    await interceptor(request);
 
     // Assert
     expect(sign).toBeCalledWith(
@@ -218,7 +218,7 @@ describe("interceptor", () => {
     );
   });
 
-  it("works with baseURL config", () => {
+  it("works with baseURL config", async () => {
     // Arrange
     const data = "foobar";
     const request: AxiosRequestConfig = {
@@ -236,7 +236,7 @@ describe("interceptor", () => {
     });
 
     // Act
-    interceptor(request);
+    await interceptor(request);
 
     // Assert
     expect(sign).toBeCalledWith(
@@ -253,7 +253,7 @@ describe("interceptor", () => {
     );
   });
 
-  it("passes the credentials", () => {
+  it("passes the credentials", async () => {
     // Arrange
     const request: AxiosRequestConfig = {
       method: "GET",
@@ -275,7 +275,7 @@ describe("interceptor", () => {
     );
 
     // Act
-    interceptor(request);
+    await interceptor(request);
 
     // Assert
     expect(sign).toBeCalledWith(

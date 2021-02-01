@@ -46,13 +46,14 @@ export const aws4Interceptor = (
   options?: InterceptorOptions,
   credentials?: Credentials
 ): ((config: AxiosRequestConfig) => Promise<AxiosRequestConfig>) => {
-  const credentialsProvider = options?.assumeRoleArn
-    ? new AssumeRoleCredentialsProvider({
-        roleArn: options.assumeRoleArn,
-        region: options.region,
-        expirationMarginSec: options.assumedRoleExpirationMarginSec,
-      })
-    : new SimpleCredentialsProvider(credentials);
+  const credentialsProvider =
+    options?.assumeRoleArn && !credentials
+      ? new AssumeRoleCredentialsProvider({
+          roleArn: options.assumeRoleArn,
+          region: options.region,
+          expirationMarginSec: options.assumedRoleExpirationMarginSec,
+        })
+      : new SimpleCredentialsProvider(credentials);
 
   return async (config): Promise<AxiosRequestConfig> => {
     if (!config.url) {

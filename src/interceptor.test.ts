@@ -4,23 +4,33 @@ import { aws4Interceptor } from ".";
 
 jest.mock("aws4");
 
+jest.mock("./credentials/assumeRoleCredentialsProvider", () => ({
+  AssumeRoleCredentialsProvider: jest.fn(() => ({
+    getCredentials: jest.fn().mockResolvedValue({
+      accessKeyId: "assumed-access-key-id",
+      secretAccessKey: "assumed-secret-access-key",
+      sessionToken: "assumed-session-token",
+    }),
+  })),
+}));
+
+const getDefaultHeaders = () => ({
+  common: { Accept: "application/json, text/plain, */*" },
+  delete: {},
+  get: {},
+  head: {},
+  post: { "Content-Type": "application/x-www-form-urlencoded" },
+  put: { "Content-Type": "application/x-www-form-urlencoded" },
+  patch: { "Content-Type": "application/x-www-form-urlencoded" },
+});
+
+const getDefaultTransformRequest = () => axios.defaults.transformRequest;
+
+beforeEach(() => {
+  (sign as jest.Mock).mockReset();
+});
+
 describe("interceptor", () => {
-  const getDefaultHeaders = () => ({
-    common: { Accept: "application/json, text/plain, */*" },
-    delete: {},
-    get: {},
-    head: {},
-    post: { "Content-Type": "application/x-www-form-urlencoded" },
-    put: { "Content-Type": "application/x-www-form-urlencoded" },
-    patch: { "Content-Type": "application/x-www-form-urlencoded" },
-  });
-
-  const getDefaultTransformRequest = () => axios.defaults.transformRequest;
-
-  beforeEach(() => {
-    (sign as jest.Mock).mockReset();
-  });
-
   it("signs GET requests", async () => {
     // Arrange
     const request: AxiosRequestConfig = {
@@ -252,8 +262,10 @@ describe("interceptor", () => {
       undefined
     );
   });
+});
 
-  it("passes the credentials", async () => {
+describe("credentials", () => {
+  it("passes provided credentials", async () => {
     // Arrange
     const request: AxiosRequestConfig = {
       method: "GET",
@@ -266,6 +278,85 @@ describe("interceptor", () => {
       {
         region: "local",
         service: "execute-api",
+      },
+      {
+        accessKeyId: "access-key-id",
+        secretAccessKey: "secret-access-key",
+        sessionToken: "session-token",
+      }
+    );
+
+    // Act
+    await interceptor(request);
+
+    // Assert
+    expect(sign).toBeCalledWith(
+      {
+        service: "execute-api",
+        path: "/foobar",
+        method: "GET",
+        region: "local",
+        host: "example.com",
+        headers: {},
+      },
+      {
+        accessKeyId: "access-key-id",
+        secretAccessKey: "secret-access-key",
+        sessionToken: "session-token",
+      }
+    );
+  });
+
+  it("gets credentials for given role", async () => {
+    // Arrange
+    const request: AxiosRequestConfig = {
+      method: "GET",
+      url: "https://example.com/foobar",
+      headers: getDefaultHeaders(),
+      transformRequest: getDefaultTransformRequest(),
+    };
+
+    const interceptor = aws4Interceptor({
+      region: "local",
+      service: "execute-api",
+      assumeRoleArn: "arn:aws:iam::111111111111:role/MockRole",
+    });
+
+    // Act
+    await interceptor(request);
+
+    // Assert
+    expect(sign).toBeCalledWith(
+      {
+        service: "execute-api",
+        path: "/foobar",
+        method: "GET",
+        region: "local",
+        host: "example.com",
+        headers: {},
+      },
+      {
+        accessKeyId: "assumed-access-key-id",
+        secretAccessKey: "assumed-secret-access-key",
+        sessionToken: "assumed-session-token",
+      }
+    );
+  });
+
+  it("prioritizes provided credentials over the role", async () => {
+    // Arrange
+    const request: AxiosRequestConfig = {
+      method: "GET",
+      url: "https://example.com/foobar",
+      headers: getDefaultHeaders(),
+      transformRequest: getDefaultTransformRequest(),
+    };
+
+    const interceptor = aws4Interceptor(
+      {
+        region: "local",
+        service: "execute-api",
+        assumeRoleArn: "arn:aws:iam::111111111111:role/MockRole",
       },
       {
         accessKeyId: "access-key-id",

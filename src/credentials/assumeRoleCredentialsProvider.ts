@@ -14,8 +14,9 @@ export class AssumeRoleCredentialsProvider implements CredentialsProvider {
 
   constructor(options: AssumeRoleCredentialsProviderOptions) {
     this.options = {
-      ...defaultOptions,
       ...options,
+      region: options.region || process.env.AWS_REGION,
+      expirationMarginSec: options.expirationMarginSec || 5,
     };
 
     this.sts = new STSClient({ region: this.options.region });
@@ -70,8 +71,3 @@ export interface ResolvedAssumeRoleCredentialsProviderOptions {
   region?: string;
   expirationMarginSec: number;
 }
-
-const defaultOptions = {
-  region: process.env.AWS_REGION,
-  expirationMarginSec: 5,
-};

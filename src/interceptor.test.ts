@@ -262,6 +262,39 @@ describe("interceptor", () => {
       undefined
     );
   });
+
+  it("passes option to sign the query instead of adding header", async () => {
+    // Arrange
+    const request: AxiosRequestConfig = {
+      method: "GET",
+      url: "https://example.com/foobar",
+      headers: getDefaultHeaders(),
+      transformRequest: getDefaultTransformRequest(),
+    };
+
+    const interceptor = aws4Interceptor({
+      region: "local",
+      service: "execute-api",
+      signQuery: true,
+    });
+
+    // Act
+    await interceptor(request);
+
+    // Assert
+    expect(sign).toBeCalledWith(
+      {
+        service: "execute-api",
+        method: "GET",
+        path: "/foobar",
+        region: "local",
+        host: "example.com",
+        headers: {},
+        signQuery: true,
+      },
+      undefined
+    );
+  });
 });
 
 describe("credentials", () => {

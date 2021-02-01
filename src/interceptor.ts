@@ -118,9 +118,7 @@ export const aws4Interceptor = (
       path: pathname + search,
       region: options?.region,
       service: options?.service,
-      ...(options?.signQuery !== undefined
-        ? { signQuery: options.signQuery }
-        : {}),
+      signQuery: options?.signQuery,
       body: transformedData,
       headers: headersToSign,
     };

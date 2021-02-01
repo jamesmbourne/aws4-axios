@@ -7,10 +7,29 @@ import { SimpleCredentialsProvider } from "./credentials/simpleCredentialsProvid
 import { AssumeRoleCredentialsProvider } from "./credentials/assumeRoleCredentialsProvider";
 
 export interface InterceptorOptions {
+  /**
+   * Target service. Will use default aws4 behavior if not given.
+   */
   service?: string;
+  /**
+   * AWS region name. Will use default aws4 behavior if not given.
+   */
   region?: string;
+  /**
+   * Whether to sign query instead of adding Authorization header. Default to false.
+   */
   signQuery?: boolean;
+  /**
+   * ARN of the IAM Role to be assumed to get the credentials from.
+   * The credentials will be cached and automatically refreshed as needed.
+   * Will not be used if credentials are provided.
+   */
   assumeRoleArn?: string;
+  /**
+   * Number of seconds before the assumed Role expiration
+   * to invalidate the cache.
+   * Used only if assumeRoleArn is provided.
+   */
   assumedRoleExpirationMarginSec?: number;
 }
 
@@ -41,6 +60,7 @@ export interface Credentials {
  * );
  *
  * @param options The options to be used when signing a request
+ * @param credentials Credentials to be used to sign the request
  */
 export const aws4Interceptor = (
   options?: InterceptorOptions,

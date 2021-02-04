@@ -13,6 +13,15 @@
       "contributions": [
         "review"
       ]
+    },
+    {
+      "login": "m-radzikowski",
+      "name": "Maciej Radzikowski",
+      "avatar_url": "https://avatars.githubusercontent.com/u/4042673?v=4",
+      "profile": "http://betterdev.blog",
+      "contributions": [
+        "test"
+      ]
     }
   ],
   "contributorsPerLine": 7,

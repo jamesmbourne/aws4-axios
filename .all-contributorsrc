@@ -1,0 +1,24 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "m-radzikowski",
+      "name": "Maciej Radzikowski",
+      "avatar_url": "https://avatars.githubusercontent.com/u/4042673?v=4",
+      "profile": "http://betterdev.blog",
+      "contributions": [
+        "test"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "projectName": "aws4-axios",
+  "projectOwner": "jamesmbourne",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "skipCi": true
+}

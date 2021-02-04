@@ -6,6 +6,15 @@
   "commit": false,
   "contributors": [
     {
+      "login": "rubenvanrooij",
+      "name": "Ruben van Rooij",
+      "avatar_url": "https://avatars.githubusercontent.com/u/875349?v=4",
+      "profile": "https://github.com/rubenvanrooij",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
       "login": "moltar",
       "name": "Roman",
       "avatar_url": "https://avatars.githubusercontent.com/u/491247?v=4",

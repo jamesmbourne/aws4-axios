@@ -104,6 +104,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <!-- markdownlint-disable -->
 <table>
   <tr>
+    <td align="center"><a href="https://github.com/rubenvanrooij"><img src="https://avatars.githubusercontent.com/u/875349?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Ruben van Rooij</b></sub></a><br /><a href="https://github.com/jamesmbourne/aws4-axios/commits?author=rubenvanrooij" title="Code">💻</a></td>
     <td align="center"><a href="https://www.ScaleLeap.com"><img src="https://avatars.githubusercontent.com/u/491247?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Roman</b></sub></a><br /><a href="https://github.com/jamesmbourne/aws4-axios/pulls?q=is%3Apr+reviewed-by%3Amoltar" title="Reviewed Pull Requests">👀</a></td>
     <td align="center"><a href="http://betterdev.blog"><img src="https://avatars.githubusercontent.com/u/4042673?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Maciej Radzikowski</b></sub></a><br /><a href="https://github.com/jamesmbourne/aws4-axios/commits?author=m-radzikowski" title="Tests">⚠️</a></td>
   </tr>

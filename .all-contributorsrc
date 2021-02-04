@@ -1,0 +1,24 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "rubenvanrooij",
+      "name": "Ruben van Rooij",
+      "avatar_url": "https://avatars.githubusercontent.com/u/875349?v=4",
+      "profile": "https://github.com/rubenvanrooij",
+      "contributions": [
+        "code"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "projectName": "aws4-axios",
+  "projectOwner": "jamesmbourne",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "skipCi": true
+}

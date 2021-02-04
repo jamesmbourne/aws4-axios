@@ -1,25 +1,31 @@
 import axios, { Method } from "axios";
 import { aws4Interceptor } from "..";
+import { getAuthErrorMessage } from "..";
 
-const methods: Method[] = ["GET", "DELETE", "OPTIONS", "HEAD"];
+const methods: Method[] = ["GET", "DELETE"];
 
 const dataMethods: Method[] = ["POST", "PATCH", "PUT"];
 
 const apiGateway = process.env.API_GATEWAY_URL;
 
-const region = "us-east-1";
-
-const service = "execute-api";
-
 describe("API Gateway integration", () => {
   it.each(methods)("HTTP %s", async (method: Method) => {
     const client = axios.create();
 
-    client.interceptors.request.use(aws4Interceptor({ region, service }));
+    client.interceptors.request.use(
+      aws4Interceptor({ region: "eu-west-2", service: "execute-api" })
+    );
 
-    const result = await client.request({ url: apiGateway, method });
+    let message;
+    let result;
+    try {
+      result = await client.request({ url: apiGateway, method });
+    } catch (err) {
+      message = getAuthErrorMessage(err);
+    }
 
-    expect(result.status).toEqual(200);
+    expect(message).toBe(undefined);
+    expect(result && result.status).toEqual(200);
   });
 
   it.each(dataMethods)("HTTP %s", async (method: Method) => {
@@ -29,15 +35,24 @@ describe("API Gateway integration", () => {
       foo: "bar",
     };
 
-    client.interceptors.request.use(aws4Interceptor({ region, service }));
+    client.interceptors.request.use(
+      aws4Interceptor({ region: "eu-west-2", service: "execute-api" })
+    );
 
-    const result = await client.request({
-      url: apiGateway,
-      method,
-      data,
-    });
+    let message;
+    let result;
+    try {
+      result = await client.request({
+        url: apiGateway,
+        method,
+        data,
+      });
+    } catch (err) {
+      message = getAuthErrorMessage(err);
+    }
 
-    expect(result.status).toEqual(200);
+    expect(message).toBe(undefined);
+    expect(result && result.status).toEqual(200);
   });
 
   it("handles custom headers", async () => {
@@ -47,16 +62,25 @@ describe("API Gateway integration", () => {
       foo: "bar",
     };
 
-    client.interceptors.request.use(aws4Interceptor({ region, service }));
+    client.interceptors.request.use(
+      aws4Interceptor({ region: "eu-west-2", service: "execute-api" })
+    );
 
-    const result = await client.request({
-      url: apiGateway,
-      method: "POST",
-      headers: { "X-Custom-Header": "Baz" },
-      data,
-    });
+    let message;
+    let result;
+    try {
+      result = await client.request({
+        url: apiGateway,
+        method: "POST",
+        headers: { "X-Custom-Header": "Baz" },
+        data,
+      });
+    } catch (err) {
+      message = getAuthErrorMessage(err);
+    }
 
-    expect(result.status).toEqual(200);
+    expect(message).toBe(undefined);
+    expect(result && result.status).toEqual(200);
   });
 
   it("handles custom Content-Type header", async () => {
@@ -66,16 +90,25 @@ describe("API Gateway integration", () => {
       foo: "bar",
     };
 
-    client.interceptors.request.use(aws4Interceptor({ region, service }));
+    client.interceptors.request.use(
+      aws4Interceptor({ region: "eu-west-2", service: "execute-api" })
+    );
 
-    const result = await client.request({
-      url: apiGateway,
-      method: "POST",
-      headers: { "Content-Type": "application/xml" },
-      data,
-    });
+    let message;
+    let result;
+    try {
+      result = await client.request({
+        url: apiGateway,
+        method: "POST",
+        headers: { "Content-Type": "application/xml" },
+        data,
+      });
+    } catch (err) {
+      message = getAuthErrorMessage(err);
+    }
 
-    expect(result.status).toEqual(200);
+    expect(message).toBe(undefined);
+    expect(result && result.status).toEqual(200);
   });
 
   it("sets content type as application/json when the body is an object", async () => {
@@ -85,14 +118,23 @@ describe("API Gateway integration", () => {
       foo: "bar",
     };
 
-    client.interceptors.request.use(aws4Interceptor({ region, service }));
+    client.interceptors.request.use(
+      aws4Interceptor({ region: "eu-west-2", service: "execute-api" })
+    );
 
-    const result = await client.request({
-      url: apiGateway,
-      method: "POST",
-      data,
-    });
+    let message;
+    let result;
+    try {
+      result = await client.request({
+        url: apiGateway,
+        method: "POST",
+        data,
+      });
+    } catch (err) {
+      message = getAuthErrorMessage(err);
+    }
 
-    expect(result.status).toEqual(200);
+    expect(message).toBe(undefined);
+    expect(result && result.status).toEqual(200);
   });
 });

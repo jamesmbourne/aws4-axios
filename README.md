@@ -73,6 +73,28 @@ const interceptor = aws4Interceptor(
 );
 ```
 
+## Assuming the IAM Role
+
+You can pass a parameter to assume the IAM Role with AWS STS
+and use the assumed role credentials to sign the request.
+This is useful when doing cross-account requests.
+
+```typescript
+const interceptor = aws4Interceptor(
+  {
+    region: "eu-west-2",
+    service: "execute-api",
+    assumeRoleArn: "arn:aws:iam::111111111111:role/MyRole",
+  }
+);
+```
+
+Obtained credentials are cached and refreshed as needed after they expire.
+
+You can use `expirationMarginSec` parameter to set the number of seconds
+before the received credentials expiration time to invalidate the cache.
+This allows setting a safety margin. Default to 5 seconds.
+
 ## Contributors ✨
 
 Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):

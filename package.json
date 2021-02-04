@@ -20,7 +20,6 @@
     "interceptor"
   ],
   "resolutions": {
-    "lodash": "4.17.15",
     "mixin-deep": "2.0.1",
     "set-value": "3.0.1",
     "axios": "0.21.1"
@@ -39,7 +38,7 @@
     "lint:prettier": "prettier --check .",
     "lint-fix:prettier": "prettier --write .",
     "lint": "run-s lint:*",
-    "lint:fix": "run-s lint-fix:*"
+    "lint-fix": "run-s lint-fix:*"
   },
   "devDependencies": {
     "@aws-sdk/client-cloudformation": "^3.4.1",

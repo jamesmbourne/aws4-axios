@@ -35,8 +35,11 @@
     "prepublishOnly": "npm run build",
     "semantic-release": "semantic-release",
     "lint:eslint": "eslint . --cache --ext .ts,.tsx",
+    "lint-fix:eslint": "eslint . --cache --ext .ts,.tsx --fix",
     "lint:prettier": "prettier --check .",
-    "lint": "run-s lint:*"
+    "lint-fix:prettier": "prettier --write .",
+    "lint": "run-s lint:*",
+    "lint:fix": "run-s lint-fix:*"
   },
   "devDependencies": {
     "@aws-sdk/client-cloudformation": "^3.4.1",

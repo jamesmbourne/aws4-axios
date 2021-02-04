@@ -18,11 +18,10 @@ functions:
     handler: src/index.handler
     name: ${self:custom.baseName}-http
     events:
-      - httpApi: '*'
+      - httpApi: "*"
 
 resources:
   Resources:
-
     # Override generated resources
 
     HttpApi:
@@ -40,7 +39,7 @@ resources:
       Properties:
         RoleName: ${self:custom.baseName}-clientRole
         AssumeRolePolicyDocument:
-          Version: '2012-10-17'
+          Version: "2012-10-17"
           Statement:
             - Effect: Allow
               Principal:
@@ -49,7 +48,7 @@ resources:
         Policies:
           - PolicyName: http
             PolicyDocument:
-              Version: '2012-10-17'
+              Version: "2012-10-17"
               Statement:
                 - Effect: Allow
                   Action:
@@ -58,6 +57,5 @@ resources:
                     - !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${HttpApi}/*
 
   Outputs:
-
     ClientRoleArn:
       Value: !GetAtt ClientRole.Arn

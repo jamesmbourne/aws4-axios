@@ -35,8 +35,8 @@
     "semantic-release": "semantic-release",
     "lint:eslint": "eslint . --cache --ext .ts,.tsx",
     "lint-fix:eslint": "eslint . --cache --ext .ts,.tsx --fix",
-    "lint:prettier": "prettier --check .",
-    "lint-fix:prettier": "prettier --write .",
+    "lint:prettier": "prettier --check src/**/*.ts",
+    "lint-fix:prettier": "prettier --write ",
     "lint": "run-s lint:*",
     "lint-fix": "run-s lint-fix:*"
   },

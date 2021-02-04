@@ -31,6 +31,7 @@
     "build": "tsc",
     "test": "jest",
     "test-it": "jest --config jest.config.it.js",
+    "test-it:deploy": "cd src/__tests__ && serverless deploy",
     "prepublishOnly": "npm run build",
     "semantic-release": "semantic-release",
     "lint:eslint": "eslint . --cache --ext .ts,.tsx",
@@ -38,6 +39,8 @@
     "lint": "run-s lint:*"
   },
   "devDependencies": {
+    "@aws-sdk/client-cloudformation": "^3.4.1",
+    "@aws-sdk/client-sts": "^3.4.1",
     "@types/jest": "^26.0.20",
     "@types/moxios": "^0.4.9",
     "@types/node": "^14.14.21",
@@ -54,6 +57,7 @@
     "prettier": "^2.2.1",
     "semantic-release": "^17.3.3",
     "ts-jest": "^26.5.0",
+    "serverless": "^2.22.0",
     "typescript": "^3.8.3"
   },
   "dependencies": {

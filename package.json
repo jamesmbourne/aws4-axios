@@ -35,7 +35,7 @@
     "prepublishOnly": "npm run build",
     "semantic-release": "semantic-release",
     "lint:eslint": "eslint . --cache --ext .ts,.tsx",
-    "lint:prettier": "prettier --check .",
+    "lint:prettier": "prettier --check src/**/*.ts",
     "lint": "run-s lint:*"
   },
   "devDependencies": {

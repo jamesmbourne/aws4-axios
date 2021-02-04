@@ -13,6 +13,24 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "moltar",
+      "name": "Roman",
+      "avatar_url": "https://avatars.githubusercontent.com/u/491247?v=4",
+      "profile": "https://www.ScaleLeap.com",
+      "contributions": [
+        "review"
+      ]
+    },
+    {
+      "login": "m-radzikowski",
+      "name": "Maciej Radzikowski",
+      "avatar_url": "https://avatars.githubusercontent.com/u/4042673?v=4",
+      "profile": "http://betterdev.blog",
+      "contributions": [
+        "test"
+      ]
     }
   ],
   "contributorsPerLine": 7,

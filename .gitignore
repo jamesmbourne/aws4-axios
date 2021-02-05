@@ -1,9 +1,13 @@
 # package directories
 node_modules
+.serverless
 
 # macOS
 .DS_Store
 
+.idea
+
 dist/
 reports/
 .eslintcache
+.idea/

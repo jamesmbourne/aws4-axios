@@ -31,13 +31,16 @@
     "build": "tsc",
     "test": "jest",
     "test-it": "jest --config jest.config.it.js",
+    "test-it:deploy": "cd src/__tests__ && serverless deploy",
     "prepublishOnly": "npm run build",
     "semantic-release": "semantic-release",
     "lint:eslint": "eslint . --cache --ext .ts,.tsx",
-    "lint:prettier": "prettier --check .",
+    "lint:prettier": "prettier --check src/**/*.ts",
     "lint": "run-s lint:*"
   },
   "devDependencies": {
+    "@aws-sdk/client-cloudformation": "^3.4.1",
+    "@aws-sdk/client-sts": "^3.4.1",
     "@types/jest": "^26.0.20",
     "@types/moxios": "^0.4.9",
     "@types/node": "^14.14.21",
@@ -47,16 +50,18 @@
     "eslint": "^7.18.0",
     "eslint-config-prettier": "^7.1.0",
     "husky": "^4.3.8",
-    "jest": "^25.4.0",
+    "jest": "^26.6.3",
     "lint-staged": "^10.5.3",
     "moxios": "^0.4.0",
     "npm-run-all": "^4.1.5",
     "prettier": "^2.2.1",
     "semantic-release": "^17.3.3",
-    "ts-jest": "^25.4.0",
-    "typescript": "^3.8.3"
+    "ts-jest": "^26.5.0",
+    "serverless": "^2.22.0",
+    "typescript": "^4.1.3"
   },
   "dependencies": {
+    "@aws-sdk/client-sts": "^3.4.1",
     "@types/aws4": "^1.5.1",
     "aws4": "^1.9.1"
   },

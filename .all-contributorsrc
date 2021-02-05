@@ -1,0 +1,52 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "florianbepunkt",
+      "name": "Florian Bischoff",
+      "avatar_url": "https://avatars.githubusercontent.com/u/8314202?v=4",
+      "profile": "https://github.com/florianbepunkt",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "rubenvanrooij",
+      "name": "Ruben van Rooij",
+      "avatar_url": "https://avatars.githubusercontent.com/u/875349?v=4",
+      "profile": "https://github.com/rubenvanrooij",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "moltar",
+      "name": "Roman",
+      "avatar_url": "https://avatars.githubusercontent.com/u/491247?v=4",
+      "profile": "https://www.ScaleLeap.com",
+      "contributions": [
+        "review"
+      ]
+    },
+    {
+      "login": "m-radzikowski",
+      "name": "Maciej Radzikowski",
+      "avatar_url": "https://avatars.githubusercontent.com/u/4042673?v=4",
+      "profile": "http://betterdev.blog",
+      "contributions": [
+        "test",
+        "code"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "projectName": "aws4-axios",
+  "projectOwner": "jamesmbourne",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "skipCi": true
+}

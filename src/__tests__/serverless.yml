@@ -1,0 +1,61 @@
+service: aws4AxiosIT
+
+custom:
+  baseName: ${self:service}-${self:provider.stage}
+
+provider:
+  name: aws
+  stage: ${opt:stage, 'dev'}
+  region: ${opt:region, 'eu-west-2'}
+  stackName: ${self:custom.baseName}
+  deploymentBucket:
+    blockPublicAccess: true
+  runtime: nodejs12.x
+  memorySize: 256
+
+functions:
+  http:
+    handler: src/index.handler
+    name: ${self:custom.baseName}-http
+    events:
+      - httpApi: "*"
+
+resources:
+  Resources:
+    # Override generated resources
+
+    HttpApi:
+      Properties:
+        Name: ${self:custom.baseName}
+
+    HttpApiRouteDefault:
+      Properties:
+        AuthorizationType: AWS_IAM
+
+    # IAM
+
+    ClientRole:
+      Type: AWS::IAM::Role
+      Properties:
+        RoleName: ${self:custom.baseName}-clientRole
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Principal:
+                AWS: !Ref AWS::AccountId
+              Action: sts:AssumeRole
+        Policies:
+          - PolicyName: http
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                - Effect: Allow
+                  Action:
+                    - execute-api:Invoke
+                  Resource:
+                    - !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${HttpApi}/*
+
+  Outputs:
+    ClientRoleArn:
+      Value: !GetAtt ClientRole.Arn

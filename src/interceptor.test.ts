@@ -4,24 +4,34 @@ import { aws4Interceptor } from ".";
 
 jest.mock("aws4");
 
+jest.mock("./credentials/assumeRoleCredentialsProvider", () => ({
+  AssumeRoleCredentialsProvider: jest.fn(() => ({
+    getCredentials: jest.fn().mockResolvedValue({
+      accessKeyId: "assumed-access-key-id",
+      secretAccessKey: "assumed-secret-access-key",
+      sessionToken: "assumed-session-token",
+    }),
+  })),
+}));
+
+const getDefaultHeaders = () => ({
+  common: { Accept: "application/json, text/plain, */*" },
+  delete: {},
+  get: {},
+  head: {},
+  post: { "Content-Type": "application/x-www-form-urlencoded" },
+  put: { "Content-Type": "application/x-www-form-urlencoded" },
+  patch: { "Content-Type": "application/x-www-form-urlencoded" },
+});
+
+const getDefaultTransformRequest = () => axios.defaults.transformRequest;
+
+beforeEach(() => {
+  (sign as jest.Mock).mockReset();
+});
+
 describe("interceptor", () => {
-  const getDefaultHeaders = () => ({
-    common: { Accept: "application/json, text/plain, */*" },
-    delete: {},
-    get: {},
-    head: {},
-    post: { "Content-Type": "application/x-www-form-urlencoded" },
-    put: { "Content-Type": "application/x-www-form-urlencoded" },
-    patch: { "Content-Type": "application/x-www-form-urlencoded" },
-  });
-
-  const getDefaultTransformRequest = () => axios.defaults.transformRequest;
-
-  beforeEach(() => {
-    (sign as jest.Mock).mockReset();
-  });
-
-  it("signs GET requests", () => {
+  it("signs GET requests", async () => {
     // Arrange
     const request: AxiosRequestConfig = {
       method: "GET",
@@ -36,7 +46,7 @@ describe("interceptor", () => {
     });
 
     // Act
-    interceptor(request);
+    await interceptor(request);
 
     // Assert
     expect(sign).toBeCalledWith(
@@ -52,7 +62,7 @@ describe("interceptor", () => {
     );
   });
 
-  it("signs url query paremeters in GET requests", () => {
+  it("signs url query paremeters in GET requests", async () => {
     // Arrange
     const request: AxiosRequestConfig = {
       method: "GET",
@@ -67,7 +77,7 @@ describe("interceptor", () => {
     });
 
     // Act
-    interceptor(request);
+    await interceptor(request);
 
     // Assert
     expect(sign).toBeCalledWith(
@@ -83,7 +93,7 @@ describe("interceptor", () => {
     );
   });
 
-  it("signs query paremeters in GET requests", () => {
+  it("signs query paremeters in GET requests", async () => {
     // Arrange
     const request: AxiosRequestConfig = {
       method: "GET",
@@ -99,7 +109,7 @@ describe("interceptor", () => {
     });
 
     // Act
-    interceptor(request);
+    await interceptor(request);
 
     // Assert
     expect(sign).toBeCalledWith(
@@ -115,7 +125,7 @@ describe("interceptor", () => {
     );
   });
 
-  it("signs POST requests with an object payload", () => {
+  it("signs POST requests with an object payload", async () => {
     // Arrange
     const data = { foo: "bar" };
 
@@ -133,7 +143,7 @@ describe("interceptor", () => {
     });
 
     // Act
-    interceptor(request);
+    await interceptor(request);
 
     // Assert
     expect(sign).toBeCalledWith(
@@ -150,7 +160,7 @@ describe("interceptor", () => {
     );
   });
 
-  it("signs POST requests with a string payload", () => {
+  it("signs POST requests with a string payload", async () => {
     // Arrange
     const data = "foobar";
     const request: AxiosRequestConfig = {
@@ -167,7 +177,7 @@ describe("interceptor", () => {
     });
 
     // Act
-    interceptor(request);
+    await interceptor(request);
 
     // Assert
     expect(sign).toBeCalledWith(
@@ -184,7 +194,7 @@ describe("interceptor", () => {
     );
   });
 
-  it("passes Content-Type header to be signed", () => {
+  it("passes Content-Type header to be signed", async () => {
     // Arrange
     const data = "foobar";
     const request: AxiosRequestConfig = {
@@ -201,7 +211,7 @@ describe("interceptor", () => {
     });
 
     // Act
-    interceptor(request);
+    await interceptor(request);
 
     // Assert
     expect(sign).toBeCalledWith(
@@ -218,7 +228,7 @@ describe("interceptor", () => {
     );
   });
 
-  it("works with baseURL config", () => {
+  it("works with baseURL config", async () => {
     // Arrange
     const data = "foobar";
     const request: AxiosRequestConfig = {
@@ -236,7 +246,7 @@ describe("interceptor", () => {
     });
 
     // Act
-    interceptor(request);
+    await interceptor(request);
 
     // Assert
     expect(sign).toBeCalledWith(
@@ -253,7 +263,42 @@ describe("interceptor", () => {
     );
   });
 
-  it("passes the credentials", () => {
+  it("passes option to sign the query instead of adding header", async () => {
+    // Arrange
+    const request: AxiosRequestConfig = {
+      method: "GET",
+      url: "https://example.com/foobar",
+      headers: getDefaultHeaders(),
+      transformRequest: getDefaultTransformRequest(),
+    };
+
+    const interceptor = aws4Interceptor({
+      region: "local",
+      service: "execute-api",
+      signQuery: true,
+    });
+
+    // Act
+    await interceptor(request);
+
+    // Assert
+    expect(sign).toBeCalledWith(
+      {
+        service: "execute-api",
+        method: "GET",
+        path: "/foobar",
+        region: "local",
+        host: "example.com",
+        headers: {},
+        signQuery: true,
+      },
+      undefined
+    );
+  });
+});
+
+describe("credentials", () => {
+  it("passes provided credentials", async () => {
     // Arrange
     const request: AxiosRequestConfig = {
       method: "GET",
@@ -275,7 +320,86 @@ describe("interceptor", () => {
     );
 
     // Act
-    interceptor(request);
+    await interceptor(request);
+
+    // Assert
+    expect(sign).toBeCalledWith(
+      {
+        service: "execute-api",
+        path: "/foobar",
+        method: "GET",
+        region: "local",
+        host: "example.com",
+        headers: {},
+      },
+      {
+        accessKeyId: "access-key-id",
+        secretAccessKey: "secret-access-key",
+        sessionToken: "session-token",
+      }
+    );
+  });
+
+  it("gets credentials for given role", async () => {
+    // Arrange
+    const request: AxiosRequestConfig = {
+      method: "GET",
+      url: "https://example.com/foobar",
+      headers: getDefaultHeaders(),
+      transformRequest: getDefaultTransformRequest(),
+    };
+
+    const interceptor = aws4Interceptor({
+      region: "local",
+      service: "execute-api",
+      assumeRoleArn: "arn:aws:iam::111111111111:role/MockRole",
+    });
+
+    // Act
+    await interceptor(request);
+
+    // Assert
+    expect(sign).toBeCalledWith(
+      {
+        service: "execute-api",
+        path: "/foobar",
+        method: "GET",
+        region: "local",
+        host: "example.com",
+        headers: {},
+      },
+      {
+        accessKeyId: "assumed-access-key-id",
+        secretAccessKey: "assumed-secret-access-key",
+        sessionToken: "assumed-session-token",
+      }
+    );
+  });
+
+  it("prioritizes provided credentials over the role", async () => {
+    // Arrange
+    const request: AxiosRequestConfig = {
+      method: "GET",
+      url: "https://example.com/foobar",
+      headers: getDefaultHeaders(),
+      transformRequest: getDefaultTransformRequest(),
+    };
+
+    const interceptor = aws4Interceptor(
+      {
+        region: "local",
+        service: "execute-api",
+        assumeRoleArn: "arn:aws:iam::111111111111:role/MockRole",
+      },
+      {
+        accessKeyId: "access-key-id",
+        secretAccessKey: "secret-access-key",
+        sessionToken: "session-token",
+      }
+    );
+
+    // Act
+    await interceptor(request);
 
     // Assert
     expect(sign).toBeCalledWith(

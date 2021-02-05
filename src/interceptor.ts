@@ -3,11 +3,34 @@ import { sign } from "aws4";
 import buildUrl from "axios/lib/helpers/buildURL";
 import combineURLs from "axios/lib/helpers/combineURLs";
 import isAbsoluteURL from "axios/lib/helpers/isAbsoluteURL";
+import { SimpleCredentialsProvider } from "./credentials/simpleCredentialsProvider";
+import { AssumeRoleCredentialsProvider } from "./credentials/assumeRoleCredentialsProvider";
 
 export interface InterceptorOptions {
+  /**
+   * Target service. Will use default aws4 behavior if not given.
+   */
   service?: string;
+  /**
+   * AWS region name. Will use default aws4 behavior if not given.
+   */
   region?: string;
+  /**
+   * Whether to sign query instead of adding Authorization header. Default to false.
+   */
   signQuery?: boolean;
+  /**
+   * ARN of the IAM Role to be assumed to get the credentials from.
+   * The credentials will be cached and automatically refreshed as needed.
+   * Will not be used if credentials are provided.
+   */
+  assumeRoleArn?: string;
+  /**
+   * Number of seconds before the assumed Role expiration
+   * to invalidate the cache.
+   * Used only if assumeRoleArn is provided.
+   */
+  assumedRoleExpirationMarginSec?: number;
 }
 
 export interface SigningOptions {
@@ -37,69 +60,76 @@ export interface Credentials {
  * );
  *
  * @param options The options to be used when signing a request
+ * @param credentials Credentials to be used to sign the request
  */
 export const aws4Interceptor = (
   options?: InterceptorOptions,
   credentials?: Credentials
-) => (config: AxiosRequestConfig): AxiosRequestConfig => {
-  if (!config.url) {
-    throw new Error("No URL present in request config, unable to sign request");
-  }
+): ((config: AxiosRequestConfig) => Promise<AxiosRequestConfig>) => {
+  const credentialsProvider =
+    options?.assumeRoleArn && !credentials
+      ? new AssumeRoleCredentialsProvider({
+          roleArn: options.assumeRoleArn,
+          region: options.region,
+          expirationMarginSec: options.assumedRoleExpirationMarginSec,
+        })
+      : new SimpleCredentialsProvider(credentials);
 
-  if (config.params) {
-    config.url = buildUrl(config.url, config.params, config.paramsSerializer);
-    delete config.params;
-  }
+  return async (config): Promise<AxiosRequestConfig> => {
+    if (!config.url) {
+      throw new Error(
+        "No URL present in request config, unable to sign request"
+      );
+    }
 
-  let url = config.url;
+    if (config.params) {
+      config.url = buildUrl(config.url, config.params, config.paramsSerializer);
+      delete config.params;
+    }
 
-  if (config.baseURL && !isAbsoluteURL(config.url)) {
-    url = combineURLs(config.baseURL, config.url);
-  }
+    let url = config.url;
 
-  const { host, pathname, search } = new URL(url);
-  const { data, headers, method } = config;
+    if (config.baseURL && !isAbsoluteURL(config.url)) {
+      url = combineURLs(config.baseURL, config.url);
+    }
 
-  let region: string | undefined;
-  let service: string | undefined;
-  let signQuery: boolean | undefined;
+    const { host, pathname, search } = new URL(url);
+    const { data, headers, method } = config;
 
-  if (options) {
-    ({ region, service } = options);
-  }
+    const transformRequest = getTransformer(config);
 
-  const transformRequest = getTransformer(config);
+    const transformedData = transformRequest(data, headers);
 
-  const transformedData = transformRequest(data, headers);
+    // Remove all the default Axios headers
+    const {
+      common,
+      delete: _delete, // 'delete' is a reserved word
+      get,
+      head,
+      post,
+      put,
+      patch,
+      ...headersToSign
+    } = headers;
 
-  // Remove all the default Axios headers
-  const {
-    common,
-    delete: _delete, // 'delete' is a reserved word
-    get,
-    head,
-    post,
-    put,
-    patch,
-    ...headersToSign
-  } = headers;
+    const signingOptions: SigningOptions = {
+      method: method && method.toUpperCase(),
+      host,
+      path: pathname + search,
+      region: options?.region,
+      service: options?.service,
+      signQuery: options?.signQuery,
+      body: transformedData,
+      headers: headersToSign,
+    };
 
-  const signingOptions: SigningOptions = {
-    method: method && method.toUpperCase(),
-    host,
-    path: pathname + search,
-    region,
-    service,
-    ...(signQuery !== undefined ? { signQuery } : {}),
-    body: transformedData,
-    headers: headersToSign,
+    const resolvedCredentials = await credentialsProvider.getCredentials();
+    sign(signingOptions, resolvedCredentials);
+
+    config.headers = signingOptions.headers;
+
+    return config;
   };
-
-  sign(signingOptions, credentials);
-
-  config.headers = signingOptions.headers;
-
-  return config;
 };
 
 const getTransformer = (config: AxiosRequestConfig) => {

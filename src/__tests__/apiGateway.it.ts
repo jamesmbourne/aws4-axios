@@ -8,6 +8,7 @@ const dataMethods: Method[] = ["POST", "PATCH", "PUT"];
 const region = process.env.AWS_REGION;
 const apiGateway = process.env.API_GATEWAY_URL;
 const clientRoleArn = process.env.CLIENT_ROLE_ARN;
+const assumedClientRoleArn = process.env.ASSUMED_CLIENT_ROLE_ARN;
 const service = "execute-api";
 
 let clientCredentials: Credentials;
@@ -57,7 +58,7 @@ describe("check that API is actually protected", () => {
   );
 });
 
-describe("API Gateway integration", () => {
+describe("with credentials from environment variables", () => {
   let client: AxiosInstance;
   const data = {
     foo: "bar",
@@ -65,6 +66,9 @@ describe("API Gateway integration", () => {
 
   beforeAll(() => {
     setEnvCredentials();
+  });
+  afterAll(() => {
+    cleanEnvCredentials();
   });
 
   beforeEach(() => {
@@ -201,4 +205,44 @@ describe("API Gateway integration", () => {
       "application/json;charset=utf-8"
     );
   });
+});
+
+describe("with role to assume", () => {
+  let client: AxiosInstance;
+  const assumedRoleName = assumedClientRoleArn?.substr(
+    assumedClientRoleArn.indexOf("/") + 1
+  );
+
+  beforeAll(() => {
+    setEnvCredentials();
+  });
+  afterAll(() => {
+    cleanEnvCredentials();
+  });
+
+  beforeEach(() => {
+    client = axios.create();
+    client.interceptors.request.use(
+      aws4Interceptor({ region, service, assumeRoleArn: assumedClientRoleArn })
+    );
+  });
+
+  it.each([...methods, ...dataMethods])(
+    "signs HTTP %s request with assumed role credentials",
+    async (method) => {
+      let error;
+      let result;
+      try {
+        result = await client.request({ url: apiGateway, method });
+      } catch (err) {
+        error = getAuthErrorMessage(err);
+      }
+
+      expect(error).toBe(undefined);
+      expect(result && result.status).toEqual(200);
+      expect(
+        result && result.data.requestContext.authorizer.iam.userArn
+      ).toContain("/" + assumedRoleName + "/");
+    }
+  );
 });

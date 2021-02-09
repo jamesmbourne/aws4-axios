@@ -29,6 +29,9 @@ module.exports = async () => {
   process.env.CLIENT_ROLE_ARN = stack.Outputs?.find(
     (o) => o.OutputKey === "ClientRoleArn"
   )?.OutputValue;
+  process.env.ASSUMED_CLIENT_ROLE_ARN = stack.Outputs?.find(
+    (o) => o.OutputKey === "AssumedClientRoleArn"
+  )?.OutputValue;
 
   process.env.AWS_REGION = region;
   process.env.STAGE = stage;

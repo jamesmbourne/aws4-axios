@@ -1,5 +1,4 @@
 import { AxiosRequestConfig } from "axios";
-import { sign } from "aws4";
 import buildUrl from "axios/lib/helpers/buildURL";
 import combineURLs from "axios/lib/helpers/combineURLs";
 import isAbsoluteURL from "axios/lib/helpers/isAbsoluteURL";
@@ -7,6 +6,9 @@ import { SimpleCredentialsProvider } from "./credentials/simpleCredentialsProvid
 import { AssumeRoleCredentialsProvider } from "./credentials/assumeRoleCredentialsProvider";
 import { CredentialsProvider } from ".";
 import { isCredentialsProvider } from "./credentials/isCredentialsProvider";
+import { SignatureV4 } from "@aws-sdk/signature-v4";
+import { Sha256 } from "@aws-crypto/sha256-js";
+import { HttpRequest } from "@aws-sdk/protocol-http";
 
 export interface InterceptorOptions {
   /**
@@ -119,26 +121,35 @@ export const aws4Interceptor = (
       ...headersToSign
     } = headers;
 
-    const signingOptions: SigningOptions = {
-      method: method && method.toUpperCase(),
-      host,
-      path: pathname + search,
-      region: options?.region,
-      service: options?.service,
-      signQuery: options?.signQuery,
-      body: transformedData,
-      headers: headersToSign,
+    const resolvedCredentials = await credentialsProvider.getCredentials();
+
+    const signerInit = {
+      service: options?.service || "",
+      region: options?.region || "",
+      sha256: Sha256,
+      credentials: resolvedCredentials || {
+        accessKeyId: "",
+        secretAccessKey: "",
+      },
     };
 
-    const resolvedCredentials = await credentialsProvider.getCredentials();
-    sign(signingOptions, resolvedCredentials);
+    const signer = new SignatureV4(signerInit);
 
-    config.headers = signingOptions.headers;
+    const minimalRequest = new HttpRequest({
+      method: method && method.toUpperCase(),
+      protocol: "https:",
+      hostname: host,
+      path: pathname + search,
+      headers: headersToSign,
+      body: transformedData,
+    });
 
-    if (signingOptions.signQuery) {
-      const originalUrl = new URL(config.url);
-      const signedUrl = new URL(originalUrl.origin + signingOptions.path);
-      config.url = signedUrl.toString();
+    if (options?.signQuery) {
+      const { query } = await signer.presign(minimalRequest);
+      config.params = query;
+    } else {
+      const result = await signer.sign(minimalRequest);
+      config.headers = result.headers;
     }
 
     return config;

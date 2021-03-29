@@ -37,17 +37,6 @@ export interface InterceptorOptions {
   assumedRoleExpirationMarginSec?: number;
 }
 
-export interface SigningOptions {
-  host?: string;
-  headers?: unknown;
-  path?: string;
-  body?: unknown;
-  region?: string;
-  service?: string;
-  signQuery?: boolean;
-  method?: string;
-}
-
 export interface Credentials {
   accessKeyId: string;
   secretAccessKey: string;

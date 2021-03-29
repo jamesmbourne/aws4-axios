@@ -102,7 +102,7 @@ export const aws4Interceptor = (
       url = combineURLs(config.baseURL, config.url);
     }
 
-    const { host, pathname, protocol, search } = new URL(url);
+    const { hostname, pathname, port, protocol, search } = new URL(url);
     const { data, headers, method } = config;
 
     const transformRequest = getTransformer(config);
@@ -138,7 +138,8 @@ export const aws4Interceptor = (
     const minimalRequest = new HttpRequest({
       method: method && method.toUpperCase(),
       protocol,
-      hostname: host,
+      hostname,
+      port: isNaN(parseInt(port)) ? undefined : parseInt(port),
       path: pathname + search,
       headers: headersToSign,
       body: transformedData,

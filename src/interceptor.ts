@@ -102,7 +102,7 @@ export const aws4Interceptor = (
       url = combineURLs(config.baseURL, config.url);
     }
 
-    const { host, pathname, search } = new URL(url);
+    const { host, pathname, protocol, search } = new URL(url);
     const { data, headers, method } = config;
 
     const transformRequest = getTransformer(config);
@@ -137,7 +137,7 @@ export const aws4Interceptor = (
 
     const minimalRequest = new HttpRequest({
       method: method && method.toUpperCase(),
-      protocol: "https:",
+      protocol,
       hostname: host,
       path: pathname + search,
       headers: headersToSign,

@@ -1,12 +1,10 @@
-import { sign } from "aws4";
 import axios, { AxiosRequestConfig } from "axios";
 import { aws4Interceptor } from ".";
 import { CredentialsProvider } from "./credentials/credentialsProvider";
 import { SignatureV4 } from "@aws-sdk/signature-v4";
+import { Sha256 } from "@aws-crypto/sha256-js";
 
-// TODO: remove aws4 mock
-jest.mock("aws4");
-
+jest.mock("@aws-sdk/signature-v4");
 jest.mock("./credentials/assumeRoleCredentialsProvider", () => ({
   AssumeRoleCredentialsProvider: jest.fn(() => ({
     getCredentials: jest.fn().mockResolvedValue({
@@ -41,13 +39,15 @@ const getDefaultTransformRequest = () => axios.defaults.transformRequest;
 
 beforeEach(() => {
   SignatureV4.prototype.sign = jest.fn().mockResolvedValue({
-    headers: "",
+    headers: {},
+  });
+  SignatureV4.prototype.presign = jest.fn().mockResolvedValue({
+    query: {},
   });
 });
 
 describe("interceptor", () => {
-  // TODO: remove "only" flag
-  it.only("signs GET requests", async () => {
+  it("signs GET requests", async () => {
     // Arrange
     const request: AxiosRequestConfig = {
       method: "GET",
@@ -64,8 +64,16 @@ describe("interceptor", () => {
     // Act
     await interceptor(request);
 
-    // TODO: add signerInit test
     // Assert
+    expect(SignatureV4).toBeCalledWith({
+      service: "execute-api",
+      region: "local",
+      sha256: Sha256,
+      credentials: {
+        accessKeyId: "",
+        secretAccessKey: "",
+      },
+    });
     expect(SignatureV4.prototype.sign).toBeCalledWith({
       method: "GET",
       protocol: "https:",
@@ -78,7 +86,7 @@ describe("interceptor", () => {
     });
   });
 
-  it.only("signs url query paremeters in GET requests", async () => {
+  it("signs url query paremeters in GET requests", async () => {
     // Arrange
     const request: AxiosRequestConfig = {
       method: "GET",
@@ -96,6 +104,15 @@ describe("interceptor", () => {
     await interceptor(request);
 
     // Assert
+    expect(SignatureV4).toBeCalledWith({
+      service: "execute-api",
+      region: "local",
+      sha256: Sha256,
+      credentials: {
+        accessKeyId: "",
+        secretAccessKey: "",
+      },
+    });
     expect(SignatureV4.prototype.sign).toBeCalledWith({
       method: "GET",
       protocol: "https:",
@@ -108,7 +125,7 @@ describe("interceptor", () => {
     });
   });
 
-  it.only("signs query paremeters in GET requests", async () => {
+  it("signs query paremeters in GET requests", async () => {
     // Arrange
     const request: AxiosRequestConfig = {
       method: "GET",
@@ -127,6 +144,15 @@ describe("interceptor", () => {
     await interceptor(request);
 
     // Assert
+    expect(SignatureV4).toBeCalledWith({
+      service: "execute-api",
+      region: "local",
+      sha256: Sha256,
+      credentials: {
+        accessKeyId: "",
+        secretAccessKey: "",
+      },
+    });
     expect(SignatureV4.prototype.sign).toBeCalledWith({
       method: "GET",
       protocol: "https:",
@@ -139,7 +165,7 @@ describe("interceptor", () => {
     });
   });
 
-  it.only("signs POST requests with an object payload", async () => {
+  it("signs POST requests with an object payload", async () => {
     // Arrange
     const data = { foo: "bar" };
 
@@ -160,6 +186,15 @@ describe("interceptor", () => {
     await interceptor(request);
 
     // Assert
+    expect(SignatureV4).toBeCalledWith({
+      service: "execute-api",
+      region: "local",
+      sha256: Sha256,
+      credentials: {
+        accessKeyId: "",
+        secretAccessKey: "",
+      },
+    });
     expect(SignatureV4.prototype.sign).toBeCalledWith({
       method: "POST",
       protocol: "https:",
@@ -192,18 +227,25 @@ describe("interceptor", () => {
     await interceptor(request);
 
     // Assert
-    expect(sign).toBeCalledWith(
-      {
-        service: "execute-api",
-        method: "POST",
-        path: "/foobar",
-        region: "local",
-        host: "example.com",
-        body: "foobar",
-        headers: {},
+    expect(SignatureV4).toBeCalledWith({
+      service: "execute-api",
+      region: "local",
+      sha256: Sha256,
+      credentials: {
+        accessKeyId: "",
+        secretAccessKey: "",
       },
-      undefined
-    );
+    });
+    expect(SignatureV4.prototype.sign).toBeCalledWith({
+      method: "POST",
+      protocol: "https:",
+      hostname: "example.com",
+      port: undefined,
+      path: "/foobar",
+      headers: {},
+      body: "foobar",
+      query: {},
+    });
   });
 
   it("passes Content-Type header to be signed", async () => {
@@ -226,18 +268,25 @@ describe("interceptor", () => {
     await interceptor(request);
 
     // Assert
-    expect(sign).toBeCalledWith(
-      {
-        service: "execute-api",
-        method: "POST",
-        path: "/foobar",
-        region: "local",
-        host: "example.com",
-        body: "foobar",
-        headers: { "Content-Type": "application/xml" },
+    expect(SignatureV4).toBeCalledWith({
+      service: "execute-api",
+      region: "local",
+      sha256: Sha256,
+      credentials: {
+        accessKeyId: "",
+        secretAccessKey: "",
       },
-      undefined
-    );
+    });
+    expect(SignatureV4.prototype.sign).toBeCalledWith({
+      method: "POST",
+      protocol: "https:",
+      hostname: "example.com",
+      port: undefined,
+      path: "/foobar",
+      headers: { "Content-Type": "application/xml" },
+      body: "foobar",
+      query: {},
+    });
   });
 
   it("works with baseURL config", async () => {
@@ -261,18 +310,25 @@ describe("interceptor", () => {
     await interceptor(request);
 
     // Assert
-    expect(sign).toBeCalledWith(
-      {
-        service: "execute-api",
-        method: "POST",
-        path: "/foo/bar",
-        region: "local",
-        host: "example.com",
-        body: "foobar",
-        headers: { "Content-Type": "application/xml" },
+    expect(SignatureV4).toBeCalledWith({
+      service: "execute-api",
+      region: "local",
+      sha256: Sha256,
+      credentials: {
+        accessKeyId: "",
+        secretAccessKey: "",
       },
-      undefined
-    );
+    });
+    expect(SignatureV4.prototype.sign).toBeCalledWith({
+      method: "POST",
+      protocol: "https:",
+      hostname: "example.com",
+      port: undefined,
+      path: "/foo/bar",
+      headers: { "Content-Type": "application/xml" },
+      body: "foobar",
+      query: {},
+    });
   });
 
   it("passes option to sign the query instead of adding header", async () => {
@@ -294,18 +350,25 @@ describe("interceptor", () => {
     await interceptor(request);
 
     // Assert
-    expect(sign).toBeCalledWith(
-      {
-        service: "execute-api",
-        method: "GET",
-        path: "/foobar",
-        region: "local",
-        host: "example.com",
-        headers: {},
-        signQuery: true,
+    expect(SignatureV4).toBeCalledWith({
+      service: "execute-api",
+      region: "local",
+      sha256: Sha256,
+      credentials: {
+        accessKeyId: "",
+        secretAccessKey: "",
       },
-      undefined
-    );
+    });
+    expect(SignatureV4.prototype.presign).toBeCalledWith({
+      method: "GET",
+      protocol: "https:",
+      hostname: "example.com",
+      port: undefined,
+      path: "/foobar",
+      headers: {},
+      body: undefined,
+      query: {},
+    });
   });
 });
 
@@ -335,21 +398,26 @@ describe("credentials", () => {
     await interceptor(request);
 
     // Assert
-    expect(sign).toBeCalledWith(
-      {
-        service: "execute-api",
-        path: "/foobar",
-        method: "GET",
-        region: "local",
-        host: "example.com",
-        headers: {},
-      },
-      {
+    expect(SignatureV4).toBeCalledWith({
+      service: "execute-api",
+      region: "local",
+      sha256: Sha256,
+      credentials: {
         accessKeyId: "access-key-id",
         secretAccessKey: "secret-access-key",
         sessionToken: "session-token",
-      }
-    );
+      },
+    });
+    expect(SignatureV4.prototype.sign).toBeCalledWith({
+      method: "GET",
+      protocol: "https:",
+      hostname: "example.com",
+      port: undefined,
+      path: "/foobar",
+      headers: {},
+      body: undefined,
+      query: {},
+    });
   });
 
   it("gets credentials for given role", async () => {
@@ -371,21 +439,26 @@ describe("credentials", () => {
     await interceptor(request);
 
     // Assert
-    expect(sign).toBeCalledWith(
-      {
-        service: "execute-api",
-        path: "/foobar",
-        method: "GET",
-        region: "local",
-        host: "example.com",
-        headers: {},
-      },
-      {
+    expect(SignatureV4).toBeCalledWith({
+      service: "execute-api",
+      region: "local",
+      sha256: Sha256,
+      credentials: {
         accessKeyId: "assumed-access-key-id",
         secretAccessKey: "assumed-secret-access-key",
         sessionToken: "assumed-session-token",
-      }
-    );
+      },
+    });
+    expect(SignatureV4.prototype.sign).toBeCalledWith({
+      method: "GET",
+      protocol: "https:",
+      hostname: "example.com",
+      port: undefined,
+      path: "/foobar",
+      headers: {},
+      body: undefined,
+      query: {},
+    });
   });
 
   it("prioritizes provided credentials provider over the role", async () => {
@@ -453,20 +526,25 @@ describe("credentials", () => {
     await interceptor(request);
 
     // Assert
-    expect(sign).toBeCalledWith(
-      {
-        service: "execute-api",
-        path: "/foobar",
-        method: "GET",
-        region: "local",
-        host: "example.com",
-        headers: {},
-      },
-      {
+    expect(SignatureV4).toBeCalledWith({
+      service: "execute-api",
+      region: "local",
+      sha256: Sha256,
+      credentials: {
         accessKeyId: "access-key-id",
         secretAccessKey: "secret-access-key",
         sessionToken: "session-token",
-      }
-    );
+      },
+    });
+    expect(SignatureV4.prototype.sign).toBeCalledWith({
+      method: "GET",
+      protocol: "https:",
+      hostname: "example.com",
+      port: undefined,
+      path: "/foobar",
+      headers: {},
+      body: undefined,
+      query: {},
+    });
   });
 });

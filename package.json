@@ -43,7 +43,7 @@
     "@aws-sdk/client-sts": "^3.4.1",
     "@types/jest": "^26.0.20",
     "@types/moxios": "^0.4.9",
-    "@types/node": "^14.14.21",
+    "@types/node": "^15.0.1",
     "@typescript-eslint/eslint-plugin": "^4.13.0",
     "@typescript-eslint/parser": "^4.13.0",
     "axios": "^0.21.0",

@@ -86,7 +86,7 @@ describe("with credentials from environment variables", () => {
     }
 
     expect(error).toBe(undefined);
-    expect(result && result.status).toEqual(200);
+    expect(result?.status).toEqual(200);
     expect(result && result.data.requestContext.http.method).toBe(method);
     expect(result && result.data.requestContext.http.path).toBe("/");
   });
@@ -105,7 +105,7 @@ describe("with credentials from environment variables", () => {
     }
 
     expect(error).toBe(undefined);
-    expect(result && result.status).toEqual(200);
+    expect(result?.status).toEqual(200);
     expect(result && result.data.requestContext.http.method).toBe(method);
     expect(result && result.data.requestContext.http.path).toBe("/");
     expect(result && JSON.parse(result.data.body)).toStrictEqual(data);
@@ -123,7 +123,7 @@ describe("with credentials from environment variables", () => {
     }
 
     expect(error).toBe(undefined);
-    expect(result && result.status).toEqual(200);
+    expect(result?.status).toEqual(200);
     expect(result && result.data.requestContext.http.path).toBe("/some/path");
   });
 
@@ -142,7 +142,7 @@ describe("with credentials from environment variables", () => {
     }
 
     expect(error).toBe(undefined);
-    expect(result && result.status).toEqual(200);
+    expect(result?.status).toEqual(200);
     expect(result && result.data.rawQueryString).toBe("lorem=42");
   });
 
@@ -161,8 +161,8 @@ describe("with credentials from environment variables", () => {
     }
 
     expect(error).toBe(undefined);
-    expect(result && result.status).toEqual(200);
-    expect(result && result.data.headers["x-custom-header"]).toBe("Baz");
+    expect(result?.status).toEqual(200);
+    expect(result?.data.headers["x-custom-header"]).toBe("Baz");
   });
 
   it("handles custom Content-Type header", async () => {
@@ -180,10 +180,8 @@ describe("with credentials from environment variables", () => {
     }
 
     expect(error).toBe(undefined);
-    expect(result && result.status).toEqual(200);
-    expect(result && result.data.headers["content-type"]).toBe(
-      "application/xml"
-    );
+    expect(result?.status).toEqual(200);
+    expect(result?.data.headers["content-type"]).toBe("application/xml");
   });
 
   it("sets content type as application/json when the body is an object", async () => {
@@ -200,10 +198,39 @@ describe("with credentials from environment variables", () => {
     }
 
     expect(error).toBe(undefined);
-    expect(result && result.status).toEqual(200);
-    expect(result && result.data.headers["content-type"]).toBe(
+    expect(result?.status).toEqual(200);
+    expect(result?.data.headers["content-type"]).toBe(
       "application/json;charset=utf-8"
     );
+  });
+});
+
+describe("signQuery", () => {
+  beforeAll(() => {
+    setEnvCredentials();
+  });
+
+  afterAll(() => {
+    cleanEnvCredentials();
+  });
+
+  it("respects signQuery option", async () => {
+    const client = axios.create();
+    client.interceptors.request.use(
+      aws4Interceptor({
+        region,
+        service,
+        signQuery: true,
+      })
+    );
+
+    const result = await client.request({
+      url: apiGateway + "/some/path",
+      method: "GET",
+      params: { foo: "bar" },
+    });
+
+    expect(result?.status).toEqual(200);
   });
 });
 
@@ -239,7 +266,7 @@ describe("with role to assume", () => {
       }
 
       expect(error).toBe(undefined);
-      expect(result && result.status).toEqual(200);
+      expect(result?.status).toEqual(200);
       expect(
         result && result.data.requestContext.authorizer.iam.userArn
       ).toContain("/" + assumedRoleName + "/");

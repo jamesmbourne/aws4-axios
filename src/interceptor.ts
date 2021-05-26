@@ -128,9 +128,11 @@ export const aws4Interceptor = (
 
     config.headers = signingOptions.headers;
 
-    const originalUrl = new URL(config.url);
-    const signedUrl = new URL(originalUrl.origin + signingOptions.path);
-    config.url = signedUrl.toString();
+    if (signingOptions.signQuery) {
+      const originalUrl = new URL(config.url);
+      const signedUrl = new URL(originalUrl.origin + signingOptions.path);
+      config.url = signedUrl.toString();
+    }
 
     return config;
   };

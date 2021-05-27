@@ -55,7 +55,7 @@ describe("axios interceptor", () => {
     const request = moxios.requests.first();
     expect(request.headers["Content-Type"]).toEqual("application/json");
     expect(request.headers["X-Custom-Header"]).toEqual("foo");
-    expect(request.headers["Authorization"]).toContain("AWS");
+    expect(request.headers["authorization"]).toContain("AWS");
   });
 
   it("should preserve default headers - without interceptor", async () => {

@@ -73,6 +73,27 @@ const interceptor = aws4Interceptor(
 );
 ```
 
+You can also pass a custom `CredentialsProvider` factory instead
+
+```typescript
+const customCredentialsProvider = {
+  getCredentials: async () => {
+    return Promise.resolve({
+      accessKeyId: "custom-provider-access-key-id",
+      secretAccessKey: "custom-provider-secret-access-key"
+    })
+  }
+}
+
+const interceptor = aws4Interceptor(
+  {
+    region: "eu-west-2",
+    service: "execute-api",
+  },
+  customCredentialsProvider
+);
+```
+
 ## Assuming the IAM Role
 
 You can pass a parameter to assume the IAM Role with AWS STS

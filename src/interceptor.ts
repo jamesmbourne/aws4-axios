@@ -5,6 +5,8 @@ import combineURLs from "axios/lib/helpers/combineURLs";
 import isAbsoluteURL from "axios/lib/helpers/isAbsoluteURL";
 import { SimpleCredentialsProvider } from "./credentials/simpleCredentialsProvider";
 import { AssumeRoleCredentialsProvider } from "./credentials/assumeRoleCredentialsProvider";
+import { CredentialsProvider } from ".";
+import { isCredentialsProvider } from "./credentials/isCredentialsProvider";
 
 export interface InterceptorOptions {
   /**
@@ -64,16 +66,21 @@ export interface Credentials {
  */
 export const aws4Interceptor = (
   options?: InterceptorOptions,
-  credentials?: Credentials
+  credentials?: Credentials | CredentialsProvider
 ): ((config: AxiosRequestConfig) => Promise<AxiosRequestConfig>) => {
-  const credentialsProvider =
-    options?.assumeRoleArn && !credentials
-      ? new AssumeRoleCredentialsProvider({
-          roleArn: options.assumeRoleArn,
-          region: options.region,
-          expirationMarginSec: options.assumedRoleExpirationMarginSec,
-        })
-      : new SimpleCredentialsProvider(credentials);
+  let credentialsProvider: CredentialsProvider;
+
+  if (isCredentialsProvider(credentials)) {
+    credentialsProvider = credentials;
+  } else if (options?.assumeRoleArn && !credentials) {
+    credentialsProvider = new AssumeRoleCredentialsProvider({
+      roleArn: options.assumeRoleArn,
+      region: options.region,
+      expirationMarginSec: options.assumedRoleExpirationMarginSec,
+    });
+  } else {
+    credentialsProvider = new SimpleCredentialsProvider(credentials);
+  }
 
   return async (config): Promise<AxiosRequestConfig> => {
     if (!config.url) {

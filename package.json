@@ -62,7 +62,8 @@
   },
   "dependencies": {
     "@aws-sdk/client-sts": "^3.4.1",
-    "@aws-sdk/signature-v4": "^3.4.1"
+    "@types/aws4": "^1.5.1",
+    "aws4": "^1.9.1"
   },
   "peerDependencies": {
     "axios": ">0.19.2 < 0.22.0"

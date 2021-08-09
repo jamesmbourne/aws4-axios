@@ -3,6 +3,7 @@ import {
   Credentials,
   InterceptorOptions,
 } from "./interceptor";
+import { CredentialsProvider } from "./credentials/credentialsProvider";
 import { getAuthErrorMessage } from "./getAuthErrorMessage";
 
 /**
@@ -16,5 +17,6 @@ export {
   getAuthErrorMessage,
   aws4Interceptor,
   Credentials,
+  CredentialsProvider,
   InterceptorOptions,
 };

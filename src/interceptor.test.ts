@@ -1,6 +1,7 @@
 import { sign } from "aws4";
 import axios, { AxiosRequestConfig } from "axios";
 import { aws4Interceptor } from ".";
+import { CredentialsProvider } from "./credentials/credentialsProvider";
 
 jest.mock("aws4");
 
@@ -13,6 +14,16 @@ jest.mock("./credentials/assumeRoleCredentialsProvider", () => ({
     }),
   })),
 }));
+
+const mockCustomProvider: CredentialsProvider = {
+  getCredentials: async () => {
+    return Promise.resolve({
+      accessKeyId: "custom-provider-access-key-id",
+      secretAccessKey: "custom-provider-secret-access-key",
+      sessionToken: "custom-provider-session-token",
+    });
+  },
+};
 
 const getDefaultHeaders = () => ({
   common: { Accept: "application/json, text/plain, */*" },
@@ -372,6 +383,45 @@ describe("credentials", () => {
         accessKeyId: "assumed-access-key-id",
         secretAccessKey: "assumed-secret-access-key",
         sessionToken: "assumed-session-token",
+      }
+    );
+  });
+
+  it("prioritizes provided credentials provider over the role", async () => {
+    // Arrange
+    const request: AxiosRequestConfig = {
+      method: "GET",
+      url: "https://example.com/foobar",
+      headers: getDefaultHeaders(),
+      transformRequest: getDefaultTransformRequest(),
+    };
+
+    const interceptor = aws4Interceptor(
+      {
+        region: "local",
+        service: "execute-api",
+        assumeRoleArn: "arn:aws:iam::111111111111:role/MockRole",
+      },
+      mockCustomProvider
+    );
+
+    // Act
+    await interceptor(request);
+
+    // Assert
+    expect(sign).toBeCalledWith(
+      {
+        service: "execute-api",
+        path: "/foobar",
+        method: "GET",
+        region: "local",
+        host: "example.com",
+        headers: {},
+      },
+      {
+        accessKeyId: "custom-provider-access-key-id",
+        secretAccessKey: "custom-provider-secret-access-key",
+        sessionToken: "custom-provider-session-token",
       }
     );
   });

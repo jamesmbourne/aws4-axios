@@ -41,7 +41,7 @@
   "devDependencies": {
     "@aws-sdk/client-cloudformation": "^3.4.1",
     "@aws-sdk/client-sts": "^3.4.1",
-    "@types/jest": "^26.0.20",
+    "@types/jest": "^27.0.0",
     "@types/moxios": "^0.4.9",
     "@types/node": "^14.14.21",
     "@typescript-eslint/eslint-plugin": "^4.13.0",

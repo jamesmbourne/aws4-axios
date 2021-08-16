@@ -80,7 +80,9 @@ describe("interceptor", () => {
       hostname: "example.com",
       port: undefined,
       path: "/foobar",
-      headers: {},
+      headers: {
+        Host: "example.com",
+      },
       body: undefined,
       query: {},
     });
@@ -118,10 +120,14 @@ describe("interceptor", () => {
       protocol: "https:",
       hostname: "example.com",
       port: undefined,
-      path: "/foobar?foo=bar",
-      headers: {},
+      path: "/foobar",
+      headers: {
+        Host: "example.com",
+      },
       body: undefined,
-      query: {},
+      query: {
+        foo: "bar",
+      },
     });
   });
 
@@ -158,10 +164,14 @@ describe("interceptor", () => {
       protocol: "https:",
       hostname: "example.com",
       port: undefined,
-      path: "/foobar?foo=bar",
-      headers: {},
+      path: "/foobar",
+      headers: {
+        Host: "example.com",
+      },
       body: undefined,
-      query: {},
+      query: {
+        foo: "bar",
+      },
     });
   });
 
@@ -201,7 +211,10 @@ describe("interceptor", () => {
       hostname: "example.com",
       port: undefined,
       path: "/foobar",
-      headers: { "Content-Type": "application/json;charset=utf-8" },
+      headers: {
+        "Content-Type": "application/json;charset=utf-8",
+        Host: "example.com",
+      },
       body: '{"foo":"bar"}',
       query: {},
     });
@@ -242,7 +255,9 @@ describe("interceptor", () => {
       hostname: "example.com",
       port: undefined,
       path: "/foobar",
-      headers: {},
+      headers: {
+        Host: "example.com",
+      },
       body: "foobar",
       query: {},
     });
@@ -283,7 +298,10 @@ describe("interceptor", () => {
       hostname: "example.com",
       port: undefined,
       path: "/foobar",
-      headers: { "Content-Type": "application/xml" },
+      headers: {
+        "Content-Type": "application/xml",
+        Host: "example.com",
+      },
       body: "foobar",
       query: {},
     });
@@ -325,7 +343,10 @@ describe("interceptor", () => {
       hostname: "example.com",
       port: undefined,
       path: "/foo/bar",
-      headers: { "Content-Type": "application/xml" },
+      headers: {
+        "Content-Type": "application/xml",
+        Host: "example.com",
+      },
       body: "foobar",
       query: {},
     });
@@ -365,7 +386,9 @@ describe("interceptor", () => {
       hostname: "example.com",
       port: undefined,
       path: "/foobar",
-      headers: {},
+      headers: {
+        Host: "example.com",
+      },
       body: undefined,
       query: {},
     });
@@ -414,7 +437,9 @@ describe("credentials", () => {
       hostname: "example.com",
       port: undefined,
       path: "/foobar",
-      headers: {},
+      headers: {
+        Host: "example.com",
+      },
       body: undefined,
       query: {},
     });
@@ -455,7 +480,9 @@ describe("credentials", () => {
       hostname: "example.com",
       port: undefined,
       path: "/foobar",
-      headers: {},
+      headers: {
+        Host: "example.com",
+      },
       body: undefined,
       query: {},
     });
@@ -483,21 +510,29 @@ describe("credentials", () => {
     await interceptor(request);
 
     // Assert
-    expect(sign).toBeCalledWith(
-      {
-        service: "execute-api",
-        path: "/foobar",
-        method: "GET",
-        region: "local",
-        host: "example.com",
-        headers: {},
+    expect(SignatureV4.prototype.sign).toBeCalledWith({
+      body: undefined,
+      path: "/foobar",
+      method: "GET",
+      hostname: "example.com",
+      headers: {
+        Host: "example.com",
       },
-      {
+      port: undefined,
+      protocol: "https:",
+      query: {},
+    });
+
+    expect(SignatureV4).toBeCalledWith({
+      service: "execute-api",
+      region: "local",
+      sha256: Sha256,
+      credentials: {
         accessKeyId: "custom-provider-access-key-id",
         secretAccessKey: "custom-provider-secret-access-key",
         sessionToken: "custom-provider-session-token",
-      }
-    );
+      },
+    });
   });
 
   it("prioritizes provided credentials over the role", async () => {
@@ -542,7 +577,9 @@ describe("credentials", () => {
       hostname: "example.com",
       port: undefined,
       path: "/foobar",
-      headers: {},
+      headers: {
+        Host: "example.com",
+      },
       body: undefined,
       query: {},
     });

@@ -91,7 +91,9 @@ export const aws4Interceptor = (
       url = combineURLs(config.baseURL, config.url);
     }
 
-    const { hostname, pathname, port, protocol, search } = new URL(url);
+    const { hostname, pathname, port, protocol, searchParams, href } = new URL(
+      url
+    );
     const { data, headers, method } = config;
 
     const transformRequest = getTransformer(config);
@@ -129,13 +131,19 @@ export const aws4Interceptor = (
       protocol,
       hostname,
       port: isNaN(parseInt(port)) ? undefined : parseInt(port),
-      path: pathname + search,
-      headers: headersToSign,
+      path: pathname,
+      query: Object.fromEntries(searchParams),
+      headers: {
+        ...headersToSign,
+        Host: hostname,
+      },
       body: transformedData,
     });
 
     if (options?.signQuery) {
-      const { query } = await signer.presign(minimalRequest);
+      const { query, headers } = await signer.presign(minimalRequest);
+      config.headers = headers;
+      config.url = new URL(pathname, href).href;
       config.params = query;
     } else {
       const result = await signer.sign(minimalRequest);

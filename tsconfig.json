@@ -5,7 +5,8 @@
     "declaration": true,
     "outDir": "./dist",
     "strict": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "lib": ["DOM.Iterable", "DOM", "ES2019"],
   },
   "include": ["src/**/*"]
 }

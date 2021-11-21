@@ -23,7 +23,7 @@
     "lodash": "4.17.15",
     "mixin-deep": "2.0.1",
     "set-value": "3.0.1",
-    "axios": "0.21.1"
+    "axios": "0.21.2"
   },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

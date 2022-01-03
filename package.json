@@ -12,7 +12,13 @@
   "bugs": {
     "url": "https://github.com/jamesmbourne/aws4-axios/issues"
   },
-  "keywords": ["aws4", "awsv4", "signature", "axios", "interceptor"],
+  "keywords": [
+    "aws4",
+    "awsv4",
+    "signature",
+    "axios",
+    "interceptor"
+  ],
   "resolutions": {
     "lodash": "4.17.15",
     "mixin-deep": "2.0.1",
@@ -39,7 +45,7 @@
     "@types/node": "^14.14.21",
     "@typescript-eslint/eslint-plugin": "^4.13.0",
     "@typescript-eslint/parser": "^4.13.0",
-    "axios": "^0.21.0",
+    "axios": "^0.24.0",
     "axios-mock-adapter": "^1.20.0",
     "eslint": "^7.18.0",
     "eslint-config-prettier": "^8.3.0",
@@ -67,7 +73,10 @@
     }
   },
   "lint-staged": {
-    "*.{ts,tsx}": ["eslint --cache --fix", "prettier --write"]
+    "*.{ts,tsx}": [
+      "eslint --cache --fix",
+      "prettier --write"
+    ]
   },
   "engines": {
     "node": ">=12"

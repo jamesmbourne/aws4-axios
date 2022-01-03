@@ -165,7 +165,7 @@ describe("interceptor", () => {
         region: "local",
         host: "example.com",
         body: '{"foo":"bar"}',
-        headers: { "Content-Type": "application/json;charset=utf-8" },
+        headers: { "Content-Type": "application/json" },
       },
       undefined
     );

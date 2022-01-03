@@ -74,7 +74,7 @@ describe("axios interceptor", () => {
     // Assert
     const request = moxios.requests.first();
     expect(request.headers["Content-Type"]).toEqual(
-      "application/json;charset=utf-8"
+      "application/json"
     );
   });
 
@@ -96,7 +96,7 @@ describe("axios interceptor", () => {
     // Assert
     const request = moxios.requests.first();
     expect(request.headers["Content-Type"]).toEqual(
-      "application/json;charset=utf-8"
+      "application/json"
     );
   });
 });

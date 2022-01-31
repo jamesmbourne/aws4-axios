@@ -57,7 +57,7 @@
     "prettier": "^2.2.1",
     "semantic-release": "^17.3.3",
     "ts-jest": "^26.5.0",
-    "serverless": "^2.22.0",
+    "serverless": "^3.0.1",
     "typescript": "^4.1.3"
   },
   "dependencies": {

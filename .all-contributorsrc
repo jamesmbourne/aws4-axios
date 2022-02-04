@@ -41,6 +41,15 @@
         "test",
         "code"
       ]
+    },
+    {
+      "login": "ballpointcarrot",
+      "name": "Christopher Kruse",
+      "avatar_url": "https://avatars.githubusercontent.com/u/96404?v=4",
+      "profile": "https://www.ballpointcarrot.net",
+      "contributions": [
+        "test"
+      ]
     }
   ],
   "contributorsPerLine": 7,

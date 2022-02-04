@@ -1,14 +1,15 @@
-import moxios from "moxios";
 import axios from "axios";
+import MockAdapter from "axios-mock-adapter";
 import aws4Interceptor from ".";
 
 describe("axios interceptor", () => {
-  beforeEach(() => {
-    moxios.install();
+  let mock: MockAdapter;
+  beforeAll(() => {
+    mock = new MockAdapter(axios);
   });
 
   afterEach(() => {
-    moxios.uninstall();
+    mock.reset();
   });
 
   it("should not mutate request config object", async () => {
@@ -23,13 +24,14 @@ describe("axios interceptor", () => {
       params: { foo: "bar" },
     };
 
-    moxios.stubOnce("GET", /./, {});
+    mock.onGet().replyOnce(200, {});
 
     // Act
     await client.get(url, config);
 
     // Assert
-    const request = moxios.requests.first();
+    const request = mock.history.get[0];
+    // const request = moxios.requests.first();
     expect(request.url).toBe(`${url}?foo=bar`);
     expect(config.params).toStrictEqual({ foo: "bar" });
   });
@@ -44,7 +46,7 @@ describe("axios interceptor", () => {
 
     const url = "https://localhost/foo";
 
-    moxios.stubOnce("POST", url, {});
+    mock.onPost(url).replyOnce(200, {});
 
     // Act
     await client.post(url, data, {
@@ -52,10 +54,10 @@ describe("axios interceptor", () => {
     });
 
     // Assert
-    const request = moxios.requests.first();
-    expect(request.headers["Content-Type"]).toEqual("application/json");
-    expect(request.headers["X-Custom-Header"]).toEqual("foo");
-    expect(request.headers["Authorization"]).toContain("AWS");
+    const request = mock.history.post[0];
+    expect(request.headers?.["Content-Type"]).toEqual("application/json");
+    expect(request.headers?.["X-Custom-Header"]).toEqual("foo");
+    expect(request.headers?.["Authorization"]).toContain("AWS");
   });
 
   it("should preserve default headers - without interceptor", async () => {
@@ -66,16 +68,14 @@ describe("axios interceptor", () => {
 
     const url = "https://localhost/foo";
 
-    moxios.stubOnce("POST", url, {});
+    mock.onPost(url).replyOnce(200, {});
 
     // Act
     await client.post(url, data, {});
 
     // Assert
-    const request = moxios.requests.first();
-    expect(request.headers["Content-Type"]).toEqual(
-      "application/json;charset=utf-8"
-    );
+    const request = mock.history.post[0];
+    expect(request.headers?.["Content-Type"]).toEqual("application/json");
   });
 
   it("should preserve default headers - with interceptor", async () => {
@@ -88,15 +88,13 @@ describe("axios interceptor", () => {
 
     const url = "https://localhost/foo";
 
-    moxios.stubOnce("POST", url, {});
+    mock.onPost(url).replyOnce(200, {});
 
     // Act
     await client.post(url, data, {});
 
     // Assert
-    const request = moxios.requests.first();
-    expect(request.headers["Content-Type"]).toEqual(
-      "application/json;charset=utf-8"
-    );
+    const request = mock.history.post[0];
+    expect(request.headers?.["Content-Type"]).toEqual("application/json");
   });
 });

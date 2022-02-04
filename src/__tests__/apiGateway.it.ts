@@ -199,9 +199,7 @@ describe("with credentials from environment variables", () => {
 
     expect(error).toBe(undefined);
     expect(result?.status).toEqual(200);
-    expect(result?.data.headers["content-type"]).toBe(
-      "application/json;charset=utf-8"
-    );
+    expect(result?.data.headers["content-type"]).toBe("application/json");
   });
 });
 

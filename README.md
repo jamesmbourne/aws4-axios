@@ -1,6 +1,6 @@
 # aws4-axios
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-4-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-5-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 [![npm version](https://img.shields.io/npm/v/aws4-axios.svg?style=flat-square)](https://www.npmjs.org/package/aws4-axios)
@@ -129,6 +129,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/rubenvanrooij"><img src="https://avatars.githubusercontent.com/u/875349?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Ruben van Rooij</b></sub></a><br /><a href="https://github.com/jamesmbourne/aws4-axios/commits?author=rubenvanrooij" title="Code">💻</a></td>
     <td align="center"><a href="https://www.ScaleLeap.com"><img src="https://avatars.githubusercontent.com/u/491247?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Roman</b></sub></a><br /><a href="https://github.com/jamesmbourne/aws4-axios/pulls?q=is%3Apr+reviewed-by%3Amoltar" title="Reviewed Pull Requests">👀</a></td>
     <td align="center"><a href="http://betterdev.blog"><img src="https://avatars.githubusercontent.com/u/4042673?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Maciej Radzikowski</b></sub></a><br /><a href="https://github.com/jamesmbourne/aws4-axios/commits?author=m-radzikowski" title="Tests">⚠️</a> <a href="https://github.com/jamesmbourne/aws4-axios/commits?author=m-radzikowski" title="Code">💻</a></td>
+    <td align="center"><a href="https://www.ballpointcarrot.net"><img src="https://avatars.githubusercontent.com/u/96404?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Christopher Kruse</b></sub></a><br /><a href="https://github.com/jamesmbourne/aws4-axios/commits?author=ballpointcarrot" title="Tests">⚠️</a></td>
   </tr>
 </table>
 

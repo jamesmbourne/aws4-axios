@@ -1,4 +1,4 @@
-import { AxiosRequestConfig } from "axios";
+import { AxiosRequestConfig, AxiosRequestHeaders, Method } from "axios";
 import { sign } from "aws4";
 import buildUrl from "axios/lib/helpers/buildURL";
 import combineURLs from "axios/lib/helpers/combineURLs";
@@ -37,7 +37,7 @@ export interface InterceptorOptions {
 
 export interface SigningOptions {
   host?: string;
-  headers?: unknown;
+  headers?: AxiosRequestHeaders;
   path?: string;
   body?: unknown;
   region?: string;
@@ -51,6 +51,11 @@ export interface Credentials {
   secretAccessKey: string;
   sessionToken?: string;
 }
+
+export type InternalAxiosHeaders = Record<
+  Method | "common",
+  Record<string, string>
+>;
 
 /**
  * Create an interceptor to add to the Axios request chain. This interceptor
@@ -117,7 +122,8 @@ export const aws4Interceptor = (
       put,
       patch,
       ...headersToSign
-    } = headers;
+    } = headers as any as InternalAxiosHeaders;
+    // Axios type definitions do not match the real shape of this object
 
     const signingOptions: SigningOptions = {
       method: method && method.toUpperCase(),
@@ -127,7 +133,7 @@ export const aws4Interceptor = (
       service: options?.service,
       signQuery: options?.signQuery,
       body: transformedData,
-      headers: headersToSign,
+      headers: headersToSign as any,
     };
 
     const resolvedCredentials = await credentialsProvider.getCredentials();

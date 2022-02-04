@@ -1,5 +1,5 @@
 import { sign } from "aws4";
-import axios, { AxiosRequestConfig } from "axios";
+import axios, { AxiosRequestConfig, AxiosRequestHeaders } from "axios";
 import { aws4Interceptor } from ".";
 import { CredentialsProvider } from "./credentials/credentialsProvider";
 
@@ -25,14 +25,14 @@ const mockCustomProvider: CredentialsProvider = {
   },
 };
 
-const getDefaultHeaders = () => ({
-  common: { Accept: "application/json, text/plain, */*" },
-  delete: {},
-  get: {},
-  head: {},
-  post: { "Content-Type": "application/x-www-form-urlencoded" },
-  put: { "Content-Type": "application/x-www-form-urlencoded" },
-  patch: { "Content-Type": "application/x-www-form-urlencoded" },
+const getDefaultHeaders = (): AxiosRequestHeaders => ({
+  // common: { Accept: "application/json, text/plain, */*" },
+  // delete: {},
+  // get: {},
+  // head: {},
+  // post: { "Content-Type": "application/x-www-form-urlencoded" },
+  // put: { "Content-Type": "application/x-www-form-urlencoded" },
+  // patch: { "Content-Type": "application/x-www-form-urlencoded" },
 });
 
 const getDefaultTransformRequest = () => axios.defaults.transformRequest;

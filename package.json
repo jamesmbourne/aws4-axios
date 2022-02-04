@@ -65,7 +65,7 @@
     "aws4": "^1.9.1"
   },
   "peerDependencies": {
-    "axios": ">0.25.0"
+    "axios": ">=0.25.0"
   },
   "husky": {
     "hooks": {

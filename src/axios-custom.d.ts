@@ -11,10 +11,12 @@ declare module "axios/lib/helpers/isAbsoluteURL" {
 }
 
 declare module "axios/lib/helpers/buildURL" {
+  import { ParamsSerializerOptions } from "axios";
+
   function buildURL(
     url: string | undefined,
     params: unknown,
-    paramsSerializer: ((params: unknown) => string) | undefined
+    paramsSerializer: ParamsSerializerOptions | undefined
   ): string;
   export default buildURL;
 }

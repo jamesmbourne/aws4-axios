@@ -3,4 +3,7 @@ module.exports = {
   testEnvironment: "node",
   testPathIgnorePatterns: ["./dist/"],
   testMatch: ["**/?(*.)+(spec|test).[jt]s?(x)"],
+  moduleNameMapper: {
+    axios: "axios/dist/node/axios.cjs",
+  },
 };

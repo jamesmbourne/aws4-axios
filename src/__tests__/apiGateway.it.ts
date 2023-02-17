@@ -255,15 +255,8 @@ describe("with role to assume", () => {
   it.each([...methods, ...dataMethods])(
     "signs HTTP %s request with assumed role credentials",
     async (method) => {
-      let error;
-      let result;
-      try {
-        result = await client.request({ url: apiGateway, method });
-      } catch (err) {
-        error = getAuthErrorMessage(err);
-      }
+      const result = await client.request({ url: apiGateway, method });
 
-      expect(error).toBe(undefined);
       expect(result?.status).toEqual(200);
       expect(
         result && result.data.requestContext.authorizer.iam.userArn

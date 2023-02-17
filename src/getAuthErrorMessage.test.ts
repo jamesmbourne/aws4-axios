@@ -1,5 +1,5 @@
+import { AxiosError, AxiosHeaders } from "axios";
 import { getAuthErrorMessage } from ".";
-import { Axios, AxiosError, AxiosHeaders } from "axios";
 
 describe("getAuthErrorMessage", () => {
   it("should return the message from the error", () => {

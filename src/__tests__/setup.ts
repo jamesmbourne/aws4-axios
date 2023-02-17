@@ -33,6 +33,8 @@ module.exports = async () => {
     (o) => o.OutputKey === "AssumedClientRoleArn"
   )?.OutputValue;
 
+  console.log(`Found stack URL: ${process.env.API_GATEWAY_URL}`);
+
   process.env.AWS_REGION = region;
   process.env.STAGE = stage;
 };

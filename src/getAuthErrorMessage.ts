@@ -1,4 +1,4 @@
-import { AxiosError } from "axios";
+import axios from "axios";
 
 interface APIGatewayAuthResponse {
   message?: string;
@@ -8,10 +8,12 @@ interface APIGatewayAuthResponse {
  *
  * @param error The error thrown by Axios
  */
-export const getAuthErrorMessage = (error: AxiosError): string | undefined => {
-  const data: APIGatewayAuthResponse = error.response && error.response.data;
+export const getAuthErrorMessage = (error: unknown): string | undefined => {
+  if (axios.isAxiosError(error)) {
+    const data: APIGatewayAuthResponse = error.response && error.response.data;
 
-  if (data) {
-    return data.message;
+    if (data) {
+      return data.message;
+    }
   }
 };

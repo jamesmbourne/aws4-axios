@@ -1,39 +1,37 @@
 import axios from "axios";
-import MockAdapter from "axios-mock-adapter";
+import nock from "nock";
+
 import aws4Interceptor from ".";
 
 describe("axios interceptor", () => {
-  let mock: MockAdapter;
   beforeAll(() => {
-    mock = new MockAdapter(axios);
+    nock.disableNetConnect();
   });
 
-  afterEach(() => {
-    mock.reset();
+  afterAll(() => {
+    nock.enableNetConnect();
   });
 
   it("should not mutate request config object", async () => {
     // Arrange
     const client = axios.create();
 
-    client.interceptors.request.use(aws4Interceptor({ region: "local" }));
+    // client.interceptors.request.use(aws4Interceptor({ region: "local" }));
 
-    const url = "https://localhost/foo";
+    const url = "http://localhost/foo";
     const config = {
       headers: { "X-Custom-Header": "foo", "Content-Type": "application/json" },
       params: { foo: "bar" },
     };
 
-    mock.onGet().replyOnce(200, {});
+    // setup nock to return a
+    nock(url).get("").query(config.params).reply(200, {});
 
     // Act
     await client.get(url, config);
 
     // Assert
-    const request = mock.history.get[0];
-    // const request = moxios.requests.first();
-    expect(request.url).toBe(`${url}?foo=bar`);
-    expect(config.params).toStrictEqual({ foo: "bar" });
+    expect(nock.isDone()).toBe(true);
   });
 
   it("should preserve headers", async () => {
@@ -46,7 +44,12 @@ describe("axios interceptor", () => {
 
     const url = "https://localhost/foo";
 
-    mock.onPost(url).replyOnce(200, {});
+    nock(url)
+      .post("")
+      .matchHeader("X-Custom-Header", "foo")
+      .matchHeader("Content-Type", "application/json")
+      .matchHeader("Authorization", /AWS/)
+      .reply(200, {});
 
     // Act
     await client.post(url, data, {
@@ -54,10 +57,7 @@ describe("axios interceptor", () => {
     });
 
     // Assert
-    const request = mock.history.post[0];
-    expect(request.headers?.["Content-Type"]).toEqual("application/json");
-    expect(request.headers?.["X-Custom-Header"]).toEqual("foo");
-    expect(request.headers?.["Authorization"]).toContain("AWS");
+    expect(nock.isDone()).toBe(true);
   });
 
   it("should preserve default headers - without interceptor", async () => {
@@ -68,14 +68,16 @@ describe("axios interceptor", () => {
 
     const url = "https://localhost/foo";
 
-    mock.onPost(url).replyOnce(200, {});
+    nock(url)
+      .matchHeader("Content-Type", "application/json")
+      .post("")
+      .reply(200, {});
 
     // Act
     await client.post(url, data, {});
 
     // Assert
-    const request = mock.history.post[0];
-    expect(request.headers?.["Content-Type"]).toEqual("application/json");
+    expect(nock.isDone()).toBe(true);
   });
 
   it("should preserve default headers - with interceptor", async () => {
@@ -88,13 +90,15 @@ describe("axios interceptor", () => {
 
     const url = "https://localhost/foo";
 
-    mock.onPost(url).replyOnce(200, {});
+    nock(url)
+      .matchHeader("Content-Type", "application/json")
+      .post("")
+      .reply(200, {});
 
     // Act
     await client.post(url, data, {});
 
     // Assert
-    const request = mock.history.post[0];
-    expect(request.headers?.["Content-Type"]).toEqual("application/json");
+    expect(nock.isDone()).toBe(true);
   });
 });

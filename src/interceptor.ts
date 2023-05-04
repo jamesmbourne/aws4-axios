@@ -66,6 +66,18 @@ export type InternalAxiosHeaders = Record<
   Record<string, string>
 >;
 
+const removeUndefined = (obj: Record<string, any>) => {
+  const newObj: Record<string, any> = {};
+
+  for (const [key, value] of Object.entries(obj)) {
+    if (value !== undefined) {
+      newObj[key] = value;
+    }
+  }
+
+  return newObj;
+};
+
 /**
  * Create an interceptor to add to the Axios request chain. This interceptor
  * will sign requests with the AWSv4 signature.
@@ -135,6 +147,8 @@ export const aws4Interceptor = <D = any>({
     } = headers as any as InternalAxiosHeaders;
     // Axios type definitions do not match the real shape of this object
 
+    console.log(headersToSign);
+
     const signingOptions: AWS4Request = {
       method: method && method.toUpperCase(),
       host,
@@ -143,7 +157,7 @@ export const aws4Interceptor = <D = any>({
       service: options?.service,
       signQuery: options?.signQuery,
       body: transformedData,
-      headers: headersToSign as any,
+      headers: removeUndefined(headersToSign) as any,
     };
 
     const resolvedCredentials = await credentialsProvider.getCredentials();

@@ -1,9 +1,10 @@
 import { sign } from "aws4";
 import axios, {
-  InternalAxiosRequestConfig,
-  AxiosRequestHeaders,
   AxiosHeaders,
+  AxiosRequestHeaders,
+  InternalAxiosRequestConfig,
 } from "axios";
+
 import { aws4Interceptor } from ".";
 import { CredentialsProvider } from "./credentials/credentialsProvider";
 

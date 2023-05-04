@@ -1,14 +1,13 @@
 import { Request as AWS4Request, sign } from "aws4";
 import {
   AxiosHeaders,
+  AxiosInstance,
   AxiosRequestConfig,
   AxiosRequestHeaders,
   InternalAxiosRequestConfig,
   Method,
 } from "axios";
-import buildUrl from "axios/lib/helpers/buildURL";
-import combineURLs from "axios/lib/helpers/combineURLs";
-import isAbsoluteURL from "axios/lib/helpers/isAbsoluteURL";
+
 import { CredentialsProvider } from ".";
 import { AssumeRoleCredentialsProvider } from "./credentials/assumeRoleCredentialsProvider";
 import { isCredentialsProvider } from "./credentials/isCredentialsProvider";
@@ -77,10 +76,15 @@ export type InternalAxiosHeaders = Record<
  * @param options The options to be used when signing a request
  * @param credentials Credentials to be used to sign the request
  */
-export const aws4Interceptor = <D = any>(
-  options?: InterceptorOptions,
-  credentials?: Credentials | CredentialsProvider
-): ((
+export const aws4Interceptor = <D = any>({
+  instance,
+  credentials,
+  options,
+}: {
+  instance: AxiosInstance;
+  options?: InterceptorOptions;
+  credentials?: Credentials | CredentialsProvider;
+}): ((
   config: InternalAxiosRequestConfig<D>
 ) => Promise<InternalAxiosRequestConfig<D>>) => {
   let credentialsProvider: CredentialsProvider;
@@ -98,22 +102,15 @@ export const aws4Interceptor = <D = any>(
   }
 
   return async (config) => {
+    const url = instance.getUri(config);
+
     if (!config.url) {
       throw new Error(
         "No URL present in request config, unable to sign request"
       );
     }
 
-    if (config.params) {
-      config.url = buildUrl(config.url, config.params, config.paramsSerializer);
-      delete config.params;
-    }
-
-    let url = config.url;
-
-    if (config.baseURL && !isAbsoluteURL(config.url)) {
-      url = combineURLs(config.baseURL, config.url);
-    }
+    console.log(url);
 
     const { host, pathname, search } = new URL(url);
     const { data, headers, method } = config;

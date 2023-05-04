@@ -112,8 +112,6 @@ export const aws4Interceptor = <D = any>({
       );
     }
 
-    console.log(url);
-
     const { host, pathname, search } = new URL(url);
     const { data, headers, method } = config;
 
@@ -158,7 +156,10 @@ export const aws4Interceptor = <D = any>({
     if (signingOptions.signQuery) {
       const originalUrl = new URL(url);
       const signedUrl = new URL(originalUrl.origin + signingOptions.path);
-      config.url = signedUrl.toString();
+
+      for (const [key, value] of signedUrl.searchParams.entries()) {
+        config.params[key] = value;
+      }
     }
 
     return config;

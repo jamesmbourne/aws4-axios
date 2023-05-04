@@ -13,7 +13,9 @@ import { AssumeRoleCredentialsProvider } from "./credentials/assumeRoleCredentia
 import { isCredentialsProvider } from "./credentials/isCredentialsProvider";
 import { SimpleCredentialsProvider } from "./credentials/simpleCredentialsProvider";
 
-type FIXME = any;
+type AxiosRawHeaders = {
+  [key: string]: any;
+};
 
 export interface InterceptorOptions {
   /**
@@ -149,7 +151,7 @@ export const aws4Interceptor = <D = any>({
     const resolvedCredentials = await credentialsProvider.getCredentials();
     sign(signingOptions, resolvedCredentials);
 
-    config.headers = new AxiosHeaders(signingOptions.headers as FIXME);
+    config.headers = new AxiosHeaders(signingOptions.headers as AxiosRawHeaders);
 
     if (signingOptions.signQuery) {
       const originalUrl = new URL(config.url);

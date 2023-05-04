@@ -8,6 +8,10 @@ describe("axios interceptor", () => {
     nock.disableNetConnect();
   });
 
+  beforeEach(() => {
+    nock.cleanAll();
+  });
+
   afterAll(() => {
     nock.enableNetConnect();
   });
@@ -16,7 +20,7 @@ describe("axios interceptor", () => {
     // Arrange
     const client = axios.create();
 
-    // client.interceptors.request.use(aws4Interceptor({ region: "local" }));
+    client.interceptors.request.use(aws4Interceptor({ region: "local" }));
 
     const url = "http://localhost/foo";
     const config = {

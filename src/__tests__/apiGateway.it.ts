@@ -73,7 +73,9 @@ describe("with credentials from environment variables", () => {
 
   beforeEach(() => {
     client = axios.create();
-    client.interceptors.request.use(aws4Interceptor({ region, service }));
+    client.interceptors.request.use(
+      aws4Interceptor({ options: { region, service }, instance: client })
+    );
   });
 
   it.each(methods)("HTTP %s", async (method: Method) => {
@@ -216,9 +218,12 @@ describe("signQuery", () => {
     const client = axios.create();
     client.interceptors.request.use(
       aws4Interceptor({
-        region,
-        service,
-        signQuery: true,
+        instance: client,
+        options: {
+          region,
+          service,
+          signQuery: true,
+        },
       })
     );
 
@@ -248,22 +253,18 @@ describe("with role to assume", () => {
   beforeEach(() => {
     client = axios.create();
     client.interceptors.request.use(
-      aws4Interceptor({ region, service, assumeRoleArn: assumedClientRoleArn })
+      aws4Interceptor({
+        options: { region, service, assumeRoleArn: assumedClientRoleArn },
+        instance: client,
+      })
     );
   });
 
   it.each([...methods, ...dataMethods])(
     "signs HTTP %s request with assumed role credentials",
     async (method) => {
-      let error;
-      let result;
-      try {
-        result = await client.request({ url: apiGateway, method });
-      } catch (err) {
-        error = getAuthErrorMessage(err);
-      }
+      const result = await client.request({ url: apiGateway, method });
 
-      expect(error).toBe(undefined);
       expect(result?.status).toEqual(200);
       expect(
         result && result.data.requestContext.authorizer.iam.userArn

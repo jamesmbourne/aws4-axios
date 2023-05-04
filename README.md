@@ -1,6 +1,9 @@
 # aws4-axios
+
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+
 [![All Contributors](https://img.shields.io/badge/all_contributors-5-orange.svg?style=flat-square)](#contributors-)
+
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 [![npm version](https://img.shields.io/npm/v/aws4-axios.svg?style=flat-square)](https://www.npmjs.org/package/aws4-axios)
@@ -25,8 +28,10 @@ import axios from "axios";
 import { aws4Interceptor } from "aws4-axios";
 
 const interceptor = aws4Interceptor({
-  region: "eu-west-2",
-  service: "execute-api",
+  options: {
+    region: "eu-west-2",
+    service: "execute-api",
+  },
 });
 
 axios.interceptors.request.use(interceptor);
@@ -46,8 +51,10 @@ import { aws4Interceptor } from "aws4-axios";
 const client = axios.create();
 
 const interceptor = aws4Interceptor({
-  region: "eu-west-2",
-  service: "execute-api",
+  options: {
+    region: "eu-west-2",
+    service: "execute-api",
+  },
 });
 
 client.interceptors.request.use(interceptor);
@@ -61,16 +68,16 @@ client.get("https://example.com/foo").then((res) => {
 You can also pass AWS credentials in explicitly (otherwise taken from process.env)
 
 ```typescript
-const interceptor = aws4Interceptor(
-  {
+const interceptor = aws4Interceptor({
+  options: {
     region: "eu-west-2",
     service: "execute-api",
   },
-  {
+  credentials: {
     accessKeyId: "",
     secretAccessKey: "",
-  }
-);
+  },
+});
 ```
 
 You can also pass a custom `CredentialsProvider` factory instead
@@ -80,18 +87,79 @@ const customCredentialsProvider = {
   getCredentials: async () => {
     return Promise.resolve({
       accessKeyId: "custom-provider-access-key-id",
-      secretAccessKey: "custom-provider-secret-access-key"
-    })
-  }
-}
+      secretAccessKey: "custom-provider-secret-access-key",
+    });
+  },
+};
 
+const interceptor = aws4Interceptor({
+  options: {
+    region: "eu-west-2",
+    service: "execute-api",
+  },
+  credentials: customCredentialsProvider,
+});
+```
+
+# Migration to v3
+
+The interface for options changed in v3. You should now pass a single object with configuration.
+
+The previous options object is now nested under the property `options`.
+
+E.g (v2).
+
+```typescript
+const interceptor = aws4Interceptor({
+  region: "eu-west-2",
+  service: "execute-api",
+  assumeRoleArn: "arn:aws:iam::111111111111:role/MyRole",
+});
+```
+
+would become (v3):
+
+```typescript
+const interceptor = aws4Interceptor({
+  options: {
+    region: "eu-west-2",
+    service: "execute-api",
+    assumeRoleArn: "arn:aws:iam::111111111111:role/MyRole",
+  },
+});
+```
+
+If you passed a custom credential provider, this is now done via the `credentials` property.
+
+E.g (v2).
+
+```typescript
 const interceptor = aws4Interceptor(
   {
     region: "eu-west-2",
     service: "execute-api",
   },
-  customCredentialsProvider
+  {
+    accessKeyId: "AKIAIOSFODNN7EXAMPLE",
+    secretAccessKey: "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY",
+  }
 );
+```
+
+would become (v3):
+
+```typescript
+const interceptor = aws4Interceptor({
+  options: {
+    region: "eu-west-2",
+    service: "execute-api",
+    assumeRoleArn: "arn:aws:iam::111111111111:role/MyRole",
+  },
+  credentials: {
+    accessKeyId: "AKIAIOSFODNN7EXAMPLE",
+    secretAccessKey: "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY",
+  },
+});
 ```
 
 ## Assuming the IAM Role
@@ -101,13 +169,13 @@ and use the assumed role credentials to sign the request.
 This is useful when doing cross-account requests.
 
 ```typescript
-const interceptor = aws4Interceptor(
-  {
+const interceptor = aws4Interceptor({
+  options: {
     region: "eu-west-2",
     service: "execute-api",
     assumeRoleArn: "arn:aws:iam::111111111111:role/MyRole",
-  }
-);
+  },
+});
 ```
 
 Obtained credentials are cached and refreshed as needed after they expire.

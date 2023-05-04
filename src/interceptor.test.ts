@@ -1,5 +1,10 @@
 import { sign } from "aws4";
-import axios, { AxiosRequestConfig, AxiosRequestHeaders } from "axios";
+import axios, {
+  AxiosHeaders,
+  AxiosRequestHeaders,
+  InternalAxiosRequestConfig,
+} from "axios";
+
 import { aws4Interceptor } from ".";
 import { CredentialsProvider } from "./credentials/credentialsProvider";
 
@@ -25,15 +30,7 @@ const mockCustomProvider: CredentialsProvider = {
   },
 };
 
-const getDefaultHeaders = (): AxiosRequestHeaders => ({
-  // common: { Accept: "application/json, text/plain, */*" },
-  // delete: {},
-  // get: {},
-  // head: {},
-  // post: { "Content-Type": "application/x-www-form-urlencoded" },
-  // put: { "Content-Type": "application/x-www-form-urlencoded" },
-  // patch: { "Content-Type": "application/x-www-form-urlencoded" },
-});
+const getDefaultHeaders = (): AxiosRequestHeaders => new AxiosHeaders();
 
 const getDefaultTransformRequest = () => axios.defaults.transformRequest;
 
@@ -44,7 +41,7 @@ beforeEach(() => {
 describe("interceptor", () => {
   it("signs GET requests", async () => {
     // Arrange
-    const request: AxiosRequestConfig = {
+    const request: InternalAxiosRequestConfig = {
       method: "GET",
       url: "https://example.com/foobar",
       headers: getDefaultHeaders(),
@@ -52,8 +49,11 @@ describe("interceptor", () => {
     };
 
     const interceptor = aws4Interceptor({
-      region: "local",
-      service: "execute-api",
+      options: {
+        region: "local",
+        service: "execute-api",
+      },
+      instance: axios,
     });
 
     // Act
@@ -75,7 +75,7 @@ describe("interceptor", () => {
 
   it("signs url query paremeters in GET requests", async () => {
     // Arrange
-    const request: AxiosRequestConfig = {
+    const request: InternalAxiosRequestConfig = {
       method: "GET",
       url: "https://example.com/foobar?foo=bar",
       headers: getDefaultHeaders(),
@@ -83,8 +83,11 @@ describe("interceptor", () => {
     };
 
     const interceptor = aws4Interceptor({
-      region: "local",
-      service: "execute-api",
+      options: {
+        region: "local",
+        service: "execute-api",
+      },
+      instance: axios,
     });
 
     // Act
@@ -106,7 +109,7 @@ describe("interceptor", () => {
 
   it("signs query paremeters in GET requests", async () => {
     // Arrange
-    const request: AxiosRequestConfig = {
+    const request: InternalAxiosRequestConfig = {
       method: "GET",
       url: "https://example.com/foobar",
       params: { foo: "bar" },
@@ -115,8 +118,11 @@ describe("interceptor", () => {
     };
 
     const interceptor = aws4Interceptor({
-      region: "local",
-      service: "execute-api",
+      options: {
+        region: "local",
+        service: "execute-api",
+      },
+      instance: axios,
     });
 
     // Act
@@ -140,7 +146,7 @@ describe("interceptor", () => {
     // Arrange
     const data = { foo: "bar" };
 
-    const request: AxiosRequestConfig = {
+    const request: InternalAxiosRequestConfig = {
       method: "POST",
       url: "https://example.com/foobar",
       data,
@@ -149,8 +155,11 @@ describe("interceptor", () => {
     };
 
     const interceptor = aws4Interceptor({
-      region: "local",
-      service: "execute-api",
+      options: {
+        region: "local",
+        service: "execute-api",
+      },
+      instance: axios,
     });
 
     // Act
@@ -174,7 +183,7 @@ describe("interceptor", () => {
   it("signs POST requests with a string payload", async () => {
     // Arrange
     const data = "foobar";
-    const request: AxiosRequestConfig = {
+    const request: InternalAxiosRequestConfig = {
       method: "POST",
       url: "https://example.com/foobar",
       data,
@@ -183,8 +192,11 @@ describe("interceptor", () => {
     };
 
     const interceptor = aws4Interceptor({
-      region: "local",
-      service: "execute-api",
+      options: {
+        region: "local",
+        service: "execute-api",
+      },
+      instance: axios,
     });
 
     // Act
@@ -208,17 +220,23 @@ describe("interceptor", () => {
   it("passes Content-Type header to be signed", async () => {
     // Arrange
     const data = "foobar";
-    const request: AxiosRequestConfig = {
+    const request: InternalAxiosRequestConfig = {
       method: "POST",
       url: "https://example.com/foobar",
       data,
-      headers: { ...getDefaultHeaders(), "Content-Type": "application/xml" },
+      headers: new AxiosHeaders({
+        ...getDefaultHeaders(),
+        "Content-Type": "application/xml",
+      }),
       transformRequest: getDefaultTransformRequest(),
     };
 
     const interceptor = aws4Interceptor({
-      region: "local",
-      service: "execute-api",
+      instance: axios,
+      options: {
+        region: "local",
+        service: "execute-api",
+      },
     });
 
     // Act
@@ -242,18 +260,24 @@ describe("interceptor", () => {
   it("works with baseURL config", async () => {
     // Arrange
     const data = "foobar";
-    const request: AxiosRequestConfig = {
+    const request: InternalAxiosRequestConfig = {
       method: "POST",
       baseURL: "https://example.com/foo",
       url: "bar",
       data,
-      headers: { ...getDefaultHeaders(), "Content-Type": "application/xml" },
+      headers: new AxiosHeaders({
+        ...getDefaultHeaders(),
+        "Content-Type": "application/xml",
+      }),
       transformRequest: getDefaultTransformRequest(),
     };
 
     const interceptor = aws4Interceptor({
-      region: "local",
-      service: "execute-api",
+      options: {
+        region: "local",
+        service: "execute-api",
+      },
+      instance: axios,
     });
 
     // Act
@@ -276,7 +300,7 @@ describe("interceptor", () => {
 
   it("passes option to sign the query instead of adding header", async () => {
     // Arrange
-    const request: AxiosRequestConfig = {
+    const request: InternalAxiosRequestConfig = {
       method: "GET",
       url: "https://example.com/foobar",
       headers: getDefaultHeaders(),
@@ -284,9 +308,12 @@ describe("interceptor", () => {
     };
 
     const interceptor = aws4Interceptor({
-      region: "local",
-      service: "execute-api",
-      signQuery: true,
+      instance: axios,
+      options: {
+        region: "local",
+        service: "execute-api",
+        signQuery: true,
+      },
     });
 
     // Act
@@ -311,24 +338,25 @@ describe("interceptor", () => {
 describe("credentials", () => {
   it("passes provided credentials", async () => {
     // Arrange
-    const request: AxiosRequestConfig = {
+    const request: InternalAxiosRequestConfig = {
       method: "GET",
       url: "https://example.com/foobar",
       headers: getDefaultHeaders(),
       transformRequest: getDefaultTransformRequest(),
     };
 
-    const interceptor = aws4Interceptor(
-      {
+    const interceptor = aws4Interceptor({
+      instance: axios,
+      options: {
         region: "local",
         service: "execute-api",
       },
-      {
+      credentials: {
         accessKeyId: "access-key-id",
         secretAccessKey: "secret-access-key",
         sessionToken: "session-token",
-      }
-    );
+      },
+    });
 
     // Act
     await interceptor(request);
@@ -353,7 +381,7 @@ describe("credentials", () => {
 
   it("gets credentials for given role", async () => {
     // Arrange
-    const request: AxiosRequestConfig = {
+    const request: InternalAxiosRequestConfig = {
       method: "GET",
       url: "https://example.com/foobar",
       headers: getDefaultHeaders(),
@@ -361,9 +389,12 @@ describe("credentials", () => {
     };
 
     const interceptor = aws4Interceptor({
-      region: "local",
-      service: "execute-api",
-      assumeRoleArn: "arn:aws:iam::111111111111:role/MockRole",
+      instance: axios,
+      options: {
+        region: "local",
+        service: "execute-api",
+        assumeRoleArn: "arn:aws:iam::111111111111:role/MockRole",
+      },
     });
 
     // Act
@@ -389,21 +420,22 @@ describe("credentials", () => {
 
   it("prioritizes provided credentials provider over the role", async () => {
     // Arrange
-    const request: AxiosRequestConfig = {
+    const request: InternalAxiosRequestConfig = {
       method: "GET",
       url: "https://example.com/foobar",
       headers: getDefaultHeaders(),
       transformRequest: getDefaultTransformRequest(),
     };
 
-    const interceptor = aws4Interceptor(
-      {
+    const interceptor = aws4Interceptor({
+      options: {
         region: "local",
         service: "execute-api",
         assumeRoleArn: "arn:aws:iam::111111111111:role/MockRole",
       },
-      mockCustomProvider
-    );
+      credentials: mockCustomProvider,
+      instance: axios,
+    });
 
     // Act
     await interceptor(request);
@@ -428,25 +460,26 @@ describe("credentials", () => {
 
   it("prioritizes provided credentials over the role", async () => {
     // Arrange
-    const request: AxiosRequestConfig = {
+    const request: InternalAxiosRequestConfig = {
       method: "GET",
       url: "https://example.com/foobar",
       headers: getDefaultHeaders(),
       transformRequest: getDefaultTransformRequest(),
     };
 
-    const interceptor = aws4Interceptor(
-      {
+    const interceptor = aws4Interceptor({
+      options: {
         region: "local",
         service: "execute-api",
         assumeRoleArn: "arn:aws:iam::111111111111:role/MockRole",
       },
-      {
+      credentials: {
         accessKeyId: "access-key-id",
         secretAccessKey: "secret-access-key",
         sessionToken: "session-token",
-      }
-    );
+      },
+      instance: axios,
+    });
 
     // Act
     await interceptor(request);

@@ -1,12 +1,21 @@
-import { AxiosRequestConfig, AxiosRequestHeaders, Method } from "axios";
-import { sign } from "aws4";
-import buildUrl from "axios/lib/helpers/buildURL";
-import combineURLs from "axios/lib/helpers/combineURLs";
-import isAbsoluteURL from "axios/lib/helpers/isAbsoluteURL";
-import { SimpleCredentialsProvider } from "./credentials/simpleCredentialsProvider";
-import { AssumeRoleCredentialsProvider } from "./credentials/assumeRoleCredentialsProvider";
+import { Request as AWS4Request, sign } from "aws4";
+import axios, {
+  AxiosHeaders,
+  AxiosInstance,
+  AxiosRequestConfig,
+  AxiosRequestHeaders,
+  InternalAxiosRequestConfig,
+  Method,
+} from "axios";
+
 import { CredentialsProvider } from ".";
+import { AssumeRoleCredentialsProvider } from "./credentials/assumeRoleCredentialsProvider";
 import { isCredentialsProvider } from "./credentials/isCredentialsProvider";
+import { SimpleCredentialsProvider } from "./credentials/simpleCredentialsProvider";
+
+type AxiosRawHeaders = {
+  [key: string]: any;
+};
 
 export interface InterceptorOptions {
   /**
@@ -57,6 +66,18 @@ export type InternalAxiosHeaders = Record<
   Record<string, string>
 >;
 
+const removeUndefined = (obj: Record<string, any>) => {
+  const newObj: Record<string, any> = {};
+
+  for (const [key, value] of Object.entries(obj)) {
+    if (value !== undefined) {
+      newObj[key] = value;
+    }
+  }
+
+  return newObj;
+};
+
 /**
  * Create an interceptor to add to the Axios request chain. This interceptor
  * will sign requests with the AWSv4 signature.
@@ -69,10 +90,17 @@ export type InternalAxiosHeaders = Record<
  * @param options The options to be used when signing a request
  * @param credentials Credentials to be used to sign the request
  */
-export const aws4Interceptor = (
-  options?: InterceptorOptions,
-  credentials?: Credentials | CredentialsProvider
-): ((config: AxiosRequestConfig) => Promise<AxiosRequestConfig>) => {
+export const aws4Interceptor = <D = any>({
+  instance = axios,
+  credentials,
+  options,
+}: {
+  instance: AxiosInstance;
+  options?: InterceptorOptions;
+  credentials?: Credentials | CredentialsProvider;
+}): ((
+  config: InternalAxiosRequestConfig<D>
+) => Promise<InternalAxiosRequestConfig<D>>) => {
   let credentialsProvider: CredentialsProvider;
 
   if (isCredentialsProvider(credentials)) {
@@ -87,22 +115,13 @@ export const aws4Interceptor = (
     credentialsProvider = new SimpleCredentialsProvider(credentials);
   }
 
-  return async (config): Promise<AxiosRequestConfig> => {
+  return async (config) => {
+    const url = instance.getUri(config);
+
     if (!config.url) {
       throw new Error(
         "No URL present in request config, unable to sign request"
       );
-    }
-
-    if (config.params) {
-      config.url = buildUrl(config.url, config.params, config.paramsSerializer);
-      delete config.params;
-    }
-
-    let url = config.url;
-
-    if (config.baseURL && !isAbsoluteURL(config.url)) {
-      url = combineURLs(config.baseURL, config.url);
     }
 
     const { host, pathname, search } = new URL(url);
@@ -110,6 +129,9 @@ export const aws4Interceptor = (
 
     const transformRequest = getTransformer(config);
 
+    transformRequest.bind(config);
+
+    // @ts-expect-error we bound the function to the config object
     const transformedData = transformRequest(data, headers);
 
     // Remove all the default Axios headers
@@ -125,7 +147,7 @@ export const aws4Interceptor = (
     } = headers as any as InternalAxiosHeaders;
     // Axios type definitions do not match the real shape of this object
 
-    const signingOptions: SigningOptions = {
+    const signingOptions: AWS4Request = {
       method: method && method.toUpperCase(),
       host,
       path: pathname + search,
@@ -133,18 +155,23 @@ export const aws4Interceptor = (
       service: options?.service,
       signQuery: options?.signQuery,
       body: transformedData,
-      headers: headersToSign as any,
+      headers: removeUndefined(headersToSign) as any,
     };
 
     const resolvedCredentials = await credentialsProvider.getCredentials();
     sign(signingOptions, resolvedCredentials);
 
-    config.headers = signingOptions.headers;
+    config.headers = new AxiosHeaders(
+      signingOptions.headers as AxiosRawHeaders
+    );
 
     if (signingOptions.signQuery) {
-      const originalUrl = new URL(config.url);
+      const originalUrl = new URL(url);
       const signedUrl = new URL(originalUrl.origin + signingOptions.path);
-      config.url = signedUrl.toString();
+
+      for (const [key, value] of signedUrl.searchParams.entries()) {
+        config.params[key] = value;
+      }
     }
 
     return config;

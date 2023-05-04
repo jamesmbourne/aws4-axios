@@ -1,5 +1,5 @@
 import { Request as AWS4Request, sign } from "aws4";
-import {
+import axios, {
   AxiosHeaders,
   AxiosInstance,
   AxiosRequestConfig,
@@ -91,7 +91,7 @@ const removeUndefined = (obj: Record<string, any>) => {
  * @param credentials Credentials to be used to sign the request
  */
 export const aws4Interceptor = <D = any>({
-  instance,
+  instance = axios,
   credentials,
   options,
 }: {
@@ -146,8 +146,6 @@ export const aws4Interceptor = <D = any>({
       ...headersToSign
     } = headers as any as InternalAxiosHeaders;
     // Axios type definitions do not match the real shape of this object
-
-    console.log(headersToSign);
 
     const signingOptions: AWS4Request = {
       method: method && method.toUpperCase(),

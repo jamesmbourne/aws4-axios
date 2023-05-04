@@ -49,8 +49,11 @@ describe("interceptor", () => {
     };
 
     const interceptor = aws4Interceptor({
-      region: "local",
-      service: "execute-api",
+      options: {
+        region: "local",
+        service: "execute-api",
+      },
+      instance: axios,
     });
 
     // Act
@@ -80,8 +83,11 @@ describe("interceptor", () => {
     };
 
     const interceptor = aws4Interceptor({
-      region: "local",
-      service: "execute-api",
+      options: {
+        region: "local",
+        service: "execute-api",
+      },
+      instance: axios,
     });
 
     // Act
@@ -112,8 +118,11 @@ describe("interceptor", () => {
     };
 
     const interceptor = aws4Interceptor({
-      region: "local",
-      service: "execute-api",
+      options: {
+        region: "local",
+        service: "execute-api",
+      },
+      instance: axios,
     });
 
     // Act
@@ -146,8 +155,11 @@ describe("interceptor", () => {
     };
 
     const interceptor = aws4Interceptor({
-      region: "local",
-      service: "execute-api",
+      options: {
+        region: "local",
+        service: "execute-api",
+      },
+      instance: axios,
     });
 
     // Act
@@ -180,8 +192,11 @@ describe("interceptor", () => {
     };
 
     const interceptor = aws4Interceptor({
-      region: "local",
-      service: "execute-api",
+      options: {
+        region: "local",
+        service: "execute-api",
+      },
+      instance: axios,
     });
 
     // Act
@@ -217,8 +232,11 @@ describe("interceptor", () => {
     };
 
     const interceptor = aws4Interceptor({
-      region: "local",
-      service: "execute-api",
+      instance: axios,
+      options: {
+        region: "local",
+        service: "execute-api",
+      },
     });
 
     // Act
@@ -255,8 +273,11 @@ describe("interceptor", () => {
     };
 
     const interceptor = aws4Interceptor({
-      region: "local",
-      service: "execute-api",
+      options: {
+        region: "local",
+        service: "execute-api",
+      },
+      instance: axios,
     });
 
     // Act
@@ -287,9 +308,12 @@ describe("interceptor", () => {
     };
 
     const interceptor = aws4Interceptor({
-      region: "local",
-      service: "execute-api",
-      signQuery: true,
+      instance: axios,
+      options: {
+        region: "local",
+        service: "execute-api",
+        signQuery: true,
+      },
     });
 
     // Act
@@ -321,17 +345,18 @@ describe("credentials", () => {
       transformRequest: getDefaultTransformRequest(),
     };
 
-    const interceptor = aws4Interceptor(
-      {
+    const interceptor = aws4Interceptor({
+      instance: axios,
+      options: {
         region: "local",
         service: "execute-api",
       },
-      {
+      credentials: {
         accessKeyId: "access-key-id",
         secretAccessKey: "secret-access-key",
         sessionToken: "session-token",
-      }
-    );
+      },
+    });
 
     // Act
     await interceptor(request);
@@ -364,9 +389,12 @@ describe("credentials", () => {
     };
 
     const interceptor = aws4Interceptor({
-      region: "local",
-      service: "execute-api",
-      assumeRoleArn: "arn:aws:iam::111111111111:role/MockRole",
+      instance: axios,
+      options: {
+        region: "local",
+        service: "execute-api",
+        assumeRoleArn: "arn:aws:iam::111111111111:role/MockRole",
+      },
     });
 
     // Act
@@ -399,14 +427,15 @@ describe("credentials", () => {
       transformRequest: getDefaultTransformRequest(),
     };
 
-    const interceptor = aws4Interceptor(
-      {
+    const interceptor = aws4Interceptor({
+      options: {
         region: "local",
         service: "execute-api",
         assumeRoleArn: "arn:aws:iam::111111111111:role/MockRole",
       },
-      mockCustomProvider
-    );
+      credentials: mockCustomProvider,
+      instance: axios,
+    });
 
     // Act
     await interceptor(request);
@@ -438,18 +467,19 @@ describe("credentials", () => {
       transformRequest: getDefaultTransformRequest(),
     };
 
-    const interceptor = aws4Interceptor(
-      {
+    const interceptor = aws4Interceptor({
+      options: {
         region: "local",
         service: "execute-api",
         assumeRoleArn: "arn:aws:iam::111111111111:role/MockRole",
       },
-      {
+      credentials: {
         accessKeyId: "access-key-id",
         secretAccessKey: "secret-access-key",
         sessionToken: "session-token",
-      }
-    );
+      },
+      instance: axios,
+    });
 
     // Act
     await interceptor(request);

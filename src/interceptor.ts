@@ -151,10 +151,12 @@ export const aws4Interceptor = <D = any>({
     const resolvedCredentials = await credentialsProvider.getCredentials();
     sign(signingOptions, resolvedCredentials);
 
-    config.headers = new AxiosHeaders(signingOptions.headers as AxiosRawHeaders);
+    config.headers = new AxiosHeaders(
+      signingOptions.headers as AxiosRawHeaders
+    );
 
     if (signingOptions.signQuery) {
-      const originalUrl = new URL(config.url);
+      const originalUrl = new URL(url);
       const signedUrl = new URL(originalUrl.origin + signingOptions.path);
       config.url = signedUrl.toString();
     }

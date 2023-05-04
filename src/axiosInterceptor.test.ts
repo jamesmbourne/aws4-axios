@@ -38,7 +38,9 @@ describe("axios interceptor", () => {
     // Arrange
     const client = axios.create();
 
-    client.interceptors.request.use(aws4Interceptor({ region: "local" }));
+    client.interceptors.request.use(
+      aws4Interceptor({ options: { region: "local" }, instance: axios })
+    );
 
     const data = { foo: "bar" };
 
@@ -84,7 +86,9 @@ describe("axios interceptor", () => {
     // Arrange
     const client = axios.create();
 
-    client.interceptors.request.use(aws4Interceptor({ region: "local" }));
+    client.interceptors.request.use(
+      aws4Interceptor({ options: { region: "local" }, instance: axios })
+    );
 
     const data = { foo: "bar" };
 

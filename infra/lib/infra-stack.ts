@@ -88,7 +88,7 @@ export class AWSv4AxiosInfraStack extends cdk.Stack {
     // set up an IAM role assumable by GitHub Actions using web identity federation
     const githubActionsRole = new iam.Role(this, "GitHubActionsRole", {
       assumedBy: new iam.WebIdentityPrincipal(
-        `arn:aws:iam::${cdk.Aws.ACCOUNT_ID}:oidc-provider/token.actions.githubusercontent.com"`,
+        `arn:aws:iam::${cdk.Aws.ACCOUNT_ID}:oidc-provider/token.actions.githubusercontent.com`,
         {
           StringLike: {
             "token.actions.githubusercontent.com:sub":

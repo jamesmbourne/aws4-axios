@@ -92,7 +92,7 @@ export class AWSv4AxiosInfraStack extends cdk.Stack {
         {
           StringLike: {
             "token.actions.githubusercontent.com:sub":
-              "repo:octo-org/octo-repo:*",
+              "repo:jamesmbourne/aws4-axios:*",
           },
           StringEquals: {
             "token.actions.githubusercontent.com:aud": "sts.amazonaws.com",

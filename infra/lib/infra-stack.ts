@@ -1,25 +1,56 @@
 import * as cdk from "aws-cdk-lib";
-import * as apigateway from "aws-cdk-lib/aws-apigateway";
+
+import { HttpIamAuthorizer } from "@aws-cdk/aws-apigatewayv2-authorizers-alpha";
+import * as apigatewayv2 from "@aws-cdk/aws-apigatewayv2-alpha";
+import { HttpLambdaIntegration } from "@aws-cdk/aws-apigatewayv2-integrations-alpha";
 import * as iam from "aws-cdk-lib/aws-iam";
 import * as lambda from "aws-cdk-lib/aws-lambda-nodejs";
 import { Construct } from "constructs";
 
 export class AWSv4AxiosInfraStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
+    const routeArn = ({
+      apiId,
+      stage,
+      httpMethod,
+      path,
+    }: {
+      apiId: string;
+      stage?: string;
+      httpMethod: apigatewayv2.HttpMethod;
+      path?: string;
+    }): string => {
+      const iamHttpMethod =
+        httpMethod === apigatewayv2.HttpMethod.ANY ? "*" : httpMethod;
+
+      // When the user has provided a path with path variables, we replace the
+      // path variable and all that follows with a wildcard.
+      const iamPath = (path ?? "/").replace(/\{.*?\}.*/, "*");
+      const iamStage = stage ?? "*";
+
+      return `arn:${cdk.Aws.PARTITION}:execute-api:${cdk.Aws.REGION}:${cdk.Aws.ACCOUNT_ID}:${apiId}/${iamStage}/${iamHttpMethod}${iamPath}`;
+    };
+
     super(scope, id, props);
 
-    // The code that defines your stack goes here
     const apiHandler = new lambda.NodejsFunction(this, "ApiHandler", {
       entry: "lib/api.ts",
       handler: "handler",
     });
 
-    const api = new apigateway.LambdaRestApi(this, "Api", {
-      handler: apiHandler,
-      defaultMethodOptions: {
-        authorizationType: apigateway.AuthorizationType.IAM,
-      },
+    const authorizer = new HttpIamAuthorizer();
+
+    const api = new apigatewayv2.HttpApi(this, "Api", {
+      defaultAuthorizer: authorizer,
+      defaultIntegration: new HttpLambdaIntegration(
+        "ApiHandlerIntegration",
+        apiHandler
+      ),
     });
+
+    if (!api.url) {
+      throw new Error("api.url is undefined");
+    }
 
     // output URL as HttpApiUrl
     new cdk.CfnOutput(this, "HttpApiUrl", {
@@ -30,11 +61,18 @@ export class AWSv4AxiosInfraStack extends cdk.Stack {
       assumedBy: new iam.AccountRootPrincipal(),
     });
 
-    // allow the client role to invoke the API (not the apiHandler)
+    // grant the client role access to the API
     clientRole.addToPolicy(
       new iam.PolicyStatement({
         actions: ["execute-api:Invoke"],
-        resources: [api.arnForExecuteApi()],
+        resources: [
+          routeArn({
+            apiId: api.httpApiId,
+            stage: api.defaultStage?.stageName,
+            httpMethod: apigatewayv2.HttpMethod.ANY,
+            path: "/*",
+          }),
+        ],
       })
     );
 
@@ -52,7 +90,14 @@ export class AWSv4AxiosInfraStack extends cdk.Stack {
     assumedClientRole.addToPolicy(
       new iam.PolicyStatement({
         actions: ["execute-api:Invoke"],
-        resources: [api.arnForExecuteApi()],
+        resources: [
+          routeArn({
+            apiId: api.httpApiId,
+            stage: api.defaultStage?.stageName,
+            httpMethod: apigatewayv2.HttpMethod.ANY,
+            path: "/*",
+          }),
+        ],
       })
     );
 
@@ -60,10 +105,5 @@ export class AWSv4AxiosInfraStack extends cdk.Stack {
     new cdk.CfnOutput(this, "AssumedClientRoleArn", {
       value: assumedClientRole.roleArn,
     });
-
-    // example resource
-    // const queue = new sqs.Queue(this, 'InfraQueue', {
-    //   visibilityTimeout: cdk.Duration.seconds(300)
-    // });
   }
 }

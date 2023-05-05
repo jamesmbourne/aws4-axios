@@ -102,6 +102,16 @@ export class AWSv4AxiosInfraStack extends cdk.Stack {
       // conditions
     });
 
+    // grant the GitHub Actions role access to CloudFormation describeStacks this stack
+    githubActionsRole.addToPolicy(
+      new iam.PolicyStatement({
+        actions: ["cloudformation:DescribeStacks"],
+        resources: [
+          `arn:${cdk.Aws.PARTITION}:cloudformation:${cdk.Aws.REGION}:${cdk.Aws.ACCOUNT_ID}:stack/${this.stackName}/*`,
+        ],
+      })
+    );
+
     // output the GitHub Actions role ARN
     new cdk.CfnOutput(this, "GitHubActionsRoleArn", {
       value: githubActionsRole.roleArn,

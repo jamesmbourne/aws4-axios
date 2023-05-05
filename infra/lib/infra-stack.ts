@@ -112,7 +112,7 @@ export class AWSv4AxiosInfraStack extends cdk.Stack {
       })
     );
 
-    githubActionsRole.grantAssumeRole(clientRole);
+    clientRole.grantAssumeRole(githubActionsRole);
 
     // output the GitHub Actions role ARN
     new cdk.CfnOutput(this, "GitHubActionsRoleArn", {

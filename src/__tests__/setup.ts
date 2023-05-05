@@ -4,10 +4,9 @@ import {
 } from "@aws-sdk/client-cloudformation";
 
 const region = process.env.AWS_REGION || "eu-west-2";
-const stage = process.env.STAGE || "dev";
 
 module.exports = async () => {
-  const stackName = `aws4AxiosIT-${stage}`;
+  const stackName = `AWSv4AxiosInfraStack`;
 
   const cf = new CloudFormationClient({ region });
   const stacks = await cf.send(
@@ -36,5 +35,4 @@ module.exports = async () => {
   console.log(`Found stack URL: ${process.env.API_GATEWAY_URL}`);
 
   process.env.AWS_REGION = region;
-  process.env.STAGE = stage;
 };

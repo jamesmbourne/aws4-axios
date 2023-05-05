@@ -12,6 +12,8 @@
     "cdk": "cdk"
   },
   "devDependencies": {
+    "@types/aws-lambda": "^8.10.115",
+    "@types/node": "^20.0.0",
     "aws-cdk": "2.78.0",
     "ts-node": "^10.9.1"
   },

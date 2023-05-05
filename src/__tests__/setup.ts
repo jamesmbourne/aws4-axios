@@ -24,15 +24,13 @@ module.exports = async () => {
 
   process.env.API_GATEWAY_URL = stack.Outputs?.find(
     (o) => o.OutputKey === "HttpApiUrl"
-  )?.OutputValue;
+  )?.OutputValue?.replace(/\/$/, "");
   process.env.CLIENT_ROLE_ARN = stack.Outputs?.find(
     (o) => o.OutputKey === "ClientRoleArn"
   )?.OutputValue;
   process.env.ASSUMED_CLIENT_ROLE_ARN = stack.Outputs?.find(
     (o) => o.OutputKey === "AssumedClientRoleArn"
   )?.OutputValue;
-
-  console.log(`Found stack URL: ${process.env.API_GATEWAY_URL}`);
 
   process.env.AWS_REGION = region;
 };

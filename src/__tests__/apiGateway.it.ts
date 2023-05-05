@@ -21,6 +21,7 @@ beforeAll(async () => {
       RoleSessionName: "integration-tests",
     })
   );
+
   clientCredentials = {
     accessKeyId: credentials?.AccessKeyId || "",
     secretAccessKey: credentials?.SecretAccessKey || "",
@@ -73,6 +74,7 @@ describe("with credentials from environment variables", () => {
 
   beforeEach(() => {
     client = axios.create();
+
     client.interceptors.request.use(
       aws4Interceptor({ options: { region, service }, instance: client })
     );

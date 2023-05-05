@@ -9,6 +9,7 @@
   "parserOptions": {
     "project": "./tsconfig.json"
   },
+  "ignorePatterns": ["infra/"],
   "rules": {
     "@typescript-eslint/no-unused-vars": [
       "error",

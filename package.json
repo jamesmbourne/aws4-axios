@@ -7,6 +7,9 @@
     "type": "git",
     "url": "https://github.com/jamesmbourne/aws4-axios.git"
   },
+  "files": [
+    "dist"
+  ],
   "license": "MIT",
   "homepage": "https://github.com/jamesmbourne/aws4-axios",
   "bugs": {
@@ -75,5 +78,8 @@
   },
   "engines": {
     "node": ">=16"
-  }
+  },
+  "workspaces": [
+    "infra"
+  ]
 }

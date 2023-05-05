@@ -1,7 +1,6 @@
 import * as cdk from "aws-cdk-lib";
-
-import { HttpIamAuthorizer } from "@aws-cdk/aws-apigatewayv2-authorizers-alpha";
 import * as apigatewayv2 from "@aws-cdk/aws-apigatewayv2-alpha";
+import { HttpIamAuthorizer } from "@aws-cdk/aws-apigatewayv2-authorizers-alpha";
 import { HttpLambdaIntegration } from "@aws-cdk/aws-apigatewayv2-integrations-alpha";
 import * as iam from "aws-cdk-lib/aws-iam";
 import * as lambda from "aws-cdk-lib/aws-lambda-nodejs";
@@ -84,6 +83,28 @@ export class AWSv4AxiosInfraStack extends cdk.Stack {
     // create another role, assumable by the first
     const assumedClientRole = new iam.Role(this, "AssumedClientRole", {
       assumedBy: new iam.ArnPrincipal(clientRole.roleArn),
+    });
+
+    // set up an IAM role assumable by GitHub Actions using web identity federation
+    const githubActionsRole = new iam.Role(this, "GitHubActionsRole", {
+      assumedBy: new iam.WebIdentityPrincipal(
+        `arn:aws:iam::${cdk.Aws.ACCOUNT_ID}:oidc-provider/token.actions.githubusercontent.com"`,
+        {
+          StringLike: {
+            "token.actions.githubusercontent.com:sub":
+              "repo:octo-org/octo-repo:*",
+          },
+          StringEquals: {
+            "token.actions.githubusercontent.com:aud": "sts.amazonaws.com",
+          },
+        }
+      ),
+      // conditions
+    });
+
+    // output the GitHub Actions role ARN
+    new cdk.CfnOutput(this, "GitHubActionsRoleArn", {
+      value: githubActionsRole.roleArn,
     });
 
     // grant the assumed role access to the API

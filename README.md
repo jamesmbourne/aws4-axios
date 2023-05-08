@@ -28,6 +28,7 @@ import axios from "axios";
 import { aws4Interceptor } from "aws4-axios";
 
 const interceptor = aws4Interceptor({
+  instance: axios,
   options: {
     region: "eu-west-2",
     service: "execute-api",
@@ -51,6 +52,7 @@ import { aws4Interceptor } from "aws4-axios";
 const client = axios.create();
 
 const interceptor = aws4Interceptor({
+  instance: axios,
   options: {
     region: "eu-west-2",
     service: "execute-api",
@@ -69,6 +71,7 @@ You can also pass AWS credentials in explicitly (otherwise taken from process.en
 
 ```typescript
 const interceptor = aws4Interceptor({
+  instance: axios,
   options: {
     region: "eu-west-2",
     service: "execute-api",
@@ -93,6 +96,7 @@ const customCredentialsProvider = {
 };
 
 const interceptor = aws4Interceptor({
+  instance: axios,
   options: {
     region: "eu-west-2",
     service: "execute-api",
@@ -121,6 +125,7 @@ would become (v3):
 
 ```typescript
 const interceptor = aws4Interceptor({
+  instance: axios,
   options: {
     region: "eu-west-2",
     service: "execute-api",
@@ -150,6 +155,7 @@ would become (v3):
 
 ```typescript
 const interceptor = aws4Interceptor({
+  instance: axios,
   options: {
     region: "eu-west-2",
     service: "execute-api",
@@ -170,6 +176,7 @@ This is useful when doing cross-account requests.
 
 ```typescript
 const interceptor = aws4Interceptor({
+  instance: axios,
   options: {
     region: "eu-west-2",
     service: "execute-api",

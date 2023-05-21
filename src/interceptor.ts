@@ -161,9 +161,7 @@ export const aws4Interceptor = <D = any>({
     const resolvedCredentials = await credentialsProvider.getCredentials();
     sign(signingOptions, resolvedCredentials);
 
-    config.headers = new AxiosHeaders(
-      signingOptions.headers as AxiosRawHeaders
-    );
+    config.headers = signingOptions.headers as AxiosHeaders;
 
     if (signingOptions.signQuery) {
       const originalUrl = new URL(url);

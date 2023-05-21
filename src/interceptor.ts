@@ -13,10 +13,6 @@ import { AssumeRoleCredentialsProvider } from "./credentials/assumeRoleCredentia
 import { isCredentialsProvider } from "./credentials/isCredentialsProvider";
 import { SimpleCredentialsProvider } from "./credentials/simpleCredentialsProvider";
 
-type AxiosRawHeaders = {
-  [key: string]: any;
-};
-
 export interface InterceptorOptions {
   /**
    * Target service. Will use default aws4 behavior if not given.
@@ -161,9 +157,7 @@ export const aws4Interceptor = <D = any>({
     const resolvedCredentials = await credentialsProvider.getCredentials();
     sign(signingOptions, resolvedCredentials);
 
-    config.headers = new AxiosHeaders(
-      signingOptions.headers as AxiosRawHeaders
-    );
+    config.headers = signingOptions.headers as AxiosHeaders;
 
     if (signingOptions.signQuery) {
       const originalUrl = new URL(url);

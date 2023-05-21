@@ -91,7 +91,7 @@ export const aws4Interceptor = <D = any>({
   credentials,
   options,
 }: {
-  instance: AxiosInstance;
+  instance?: AxiosInstance;
   options?: InterceptorOptions;
   credentials?: Credentials | CredentialsProvider;
 }): ((

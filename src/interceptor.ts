@@ -13,10 +13,6 @@ import { AssumeRoleCredentialsProvider } from "./credentials/assumeRoleCredentia
 import { isCredentialsProvider } from "./credentials/isCredentialsProvider";
 import { SimpleCredentialsProvider } from "./credentials/simpleCredentialsProvider";
 
-type AxiosRawHeaders = {
-  [key: string]: any;
-};
-
 export interface InterceptorOptions {
   /**
    * Target service. Will use default aws4 behavior if not given.

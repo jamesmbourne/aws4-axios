@@ -1,0 +1,31 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
+// https://github.com/microsoft/vscode-dev-containers/tree/v0.231.2/containers/typescript-node
+{
+    "name": "Node.js & TypeScript",
+    "build": {
+        "dockerfile": "Dockerfile"
+    },
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "dbaeumer.vscode-eslint",
+                "EditorConfig.EditorConfig",
+                "amazonwebservices.aws-toolkit-vscode" // AWS Toolkit Support
+            ]
+        }
+    },
+    // Use 'forwardPorts' to make a list of ports inside the container available locally.
+    // "forwardPorts": [],
+    // Use 'postCreateCommand' to run commands after the container is created.
+    "postCreateCommand": "npm ci",
+    // Comment out to connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
+    "remoteUser": "node",
+    "features": {
+        "git": "latest",
+        "github-cli": "latest",
+        "aws-cli": "latest"
+    },
+    "mounts": [
+        "source=${env:HOME}${env:USERPROFILE}/.aws,target=/home/node/.aws,type=bind"
+    ]
+}

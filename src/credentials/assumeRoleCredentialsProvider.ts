@@ -17,6 +17,7 @@ export class AssumeRoleCredentialsProvider implements CredentialsProvider {
       ...options,
       region: options.region || process.env.AWS_REGION,
       expirationMarginSec: options.expirationMarginSec || 5,
+      roleSessionName: options.roleSessionName || "axios",
     };
 
     this.sts = new STSClient({ region: this.options.region });
@@ -48,7 +49,7 @@ export class AssumeRoleCredentialsProvider implements CredentialsProvider {
     const res = await this.sts.send(
       new AssumeRoleCommand({
         RoleArn: this.options.roleArn,
-        RoleSessionName: "axios",
+        RoleSessionName: this.options.roleSessionName,
       })
     );
 
@@ -64,10 +65,12 @@ export interface AssumeRoleCredentialsProviderOptions {
   roleArn: string;
   region?: string;
   expirationMarginSec?: number;
+  roleSessionName?: string;
 }
 
 export interface ResolvedAssumeRoleCredentialsProviderOptions {
   roleArn: string;
   region?: string;
   expirationMarginSec: number;
+  roleSessionName: string;
 }

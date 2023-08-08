@@ -174,6 +174,7 @@ const interceptor = aws4Interceptor({
     region: "eu-west-2",
     service: "execute-api",
     assumeRoleArn: "arn:aws:iam::111111111111:role/MyRole",
+    assumeRoleSessionName: "MyApiClient", // optional, default value is "axios"
   },
 });
 ```

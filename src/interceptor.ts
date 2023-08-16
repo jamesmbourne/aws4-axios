@@ -38,6 +38,14 @@ export interface InterceptorOptions {
    * Used only if assumeRoleArn is provided.
    */
   assumedRoleExpirationMarginSec?: number;
+  /**
+   * An identifier for the assumed role session.
+   * Use the role session name to uniquely identify a session when the same role is
+   * assumed by different principals or for different reasons.
+   * In cross-account scenarios, the role session name is visible to,
+   * and can be logged by the account that owns the role. 
+   */
+  assumeRoleSessionName?: string;
 }
 
 export interface SigningOptions {
@@ -106,6 +114,7 @@ export const aws4Interceptor = <D = any>({
       roleArn: options.assumeRoleArn,
       region: options.region,
       expirationMarginSec: options.assumedRoleExpirationMarginSec,
+      roleSessionName: options.assumeRoleSessionName,
     });
   } else {
     credentialsProvider = new SimpleCredentialsProvider(credentials);

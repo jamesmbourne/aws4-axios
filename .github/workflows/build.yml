@@ -1,6 +1,11 @@
 name: Node.js CI
 
-on: [pull_request]
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
 
 permissions:
   id-token: write # This is required for requesting the JWT

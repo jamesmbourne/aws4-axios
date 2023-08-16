@@ -50,6 +50,15 @@
       "contributions": [
         "test"
       ]
+    },
+    {
+      "login": "james-hu",
+      "name": "James Hu",
+      "avatar_url": "https://avatars.githubusercontent.com/u/8565700?v=4",
+      "profile": "https://plus.google.com/photos/104306225331370072882/albums",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
@@ -57,5 +66,7 @@
   "projectOwner": "jamesmbourne",
   "repoType": "github",
   "repoHost": "https://github.com",
-  "skipCi": true
+  "skipCi": true,
+  "commitType": "docs",
+  "commitConvention": "angular"
 }

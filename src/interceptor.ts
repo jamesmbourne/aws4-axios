@@ -130,12 +130,13 @@ export const aws4Interceptor = <D = any>({
     }
 
     const { host, pathname, search } = new URL(url);
-    const { data, headers, method } = config;
-
+    const { data, method } = config;
     const transformRequest = getTransformer(config);
 
     transformRequest.bind(config);
 
+    const headers: AxiosHeaders = config.headers;
+    
     // @ts-expect-error we bound the function to the config object
     const transformedData = transformRequest(data, headers);
 

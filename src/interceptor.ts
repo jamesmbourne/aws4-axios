@@ -130,7 +130,8 @@ export const aws4Interceptor = <D = any>({
     }
 
     const { host, pathname, search } = new URL(url);
-    const { data, headers, method } = config;
+    const { data, method } = config;
+    const headers = new AxiosHeaders(config.headers);
 
     const transformRequest = getTransformer(config);
 

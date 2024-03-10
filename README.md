@@ -1,7 +1,9 @@
 # aws4-axios
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+
 [![All Contributors](https://img.shields.io/badge/all_contributors-6-orange.svg?style=flat-square)](#contributors-)
+
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 [![npm version](https://img.shields.io/npm/v/aws4-axios.svg?style=flat-square)](https://www.npmjs.org/package/aws4-axios)
@@ -16,6 +18,18 @@ This may be useful for accessing AWS services protected with IAM auth such as an
 | yarn                  | npm                             |
 | --------------------- | ------------------------------- |
 | `yarn add aws4-axios` | `npm install --save aws4-axios` |
+
+# Compatibility
+
+This interceptor is heavily dependent on Axios internals, so minor changes to them can cause the interceptor to fail.
+
+Please make sure you are using one of the following versions of Axios before submitting issues etc.
+
+| Axios Version       | Supported? |
+| ------------------- | ---------- |
+| `< 1.4.0`           | ❌ No      |
+| `>= 1.4.0 <= 1.6.7` | ✅ Yes     |
+| `> 1.6.7`           | Unknown    |
 
 # Usage
 

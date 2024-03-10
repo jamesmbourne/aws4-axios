@@ -1,6 +1,6 @@
-import axios, { AxiosInstance, Method } from "axios";
-import { aws4Interceptor, Credentials, getAuthErrorMessage } from "..";
 import { AssumeRoleCommand, STSClient } from "@aws-sdk/client-sts";
+import axios, { AxiosInstance, Method } from "axios";
+import { Credentials, aws4Interceptor, getAuthErrorMessage } from "..";
 
 const methods: Method[] = ["GET", "DELETE"];
 const dataMethods: Method[] = ["POST", "PATCH", "PUT"];
@@ -103,6 +103,7 @@ describe("with credentials from environment variables", () => {
         url: apiGateway,
         method,
         data,
+        headers: { foo: "bar" },
       });
     } catch (err) {
       error = getAuthErrorMessage(err);
@@ -110,9 +111,10 @@ describe("with credentials from environment variables", () => {
 
     expect(error).toBe(undefined);
     expect(result?.status).toEqual(200);
-    expect(result && result.data.requestContext.http.method).toBe(method);
-    expect(result && result.data.requestContext.http.path).toBe("/");
+    expect(result?.data.requestContext.http.method).toBe(method);
+    expect(result?.data.requestContext.http.path).toBe("/");
     expect(result && JSON.parse(result.data.body)).toStrictEqual(data);
+    expect(result?.data.headers.foo).toEqual("bar");
   });
 
   it("handles path", async () => {

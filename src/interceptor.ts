@@ -1,5 +1,6 @@
 import { Request as AWS4Request, sign } from "aws4";
 import axios, {
+  AxiosHeaderValue,
   AxiosHeaders,
   AxiosInstance,
   AxiosRequestConfig,
@@ -12,6 +13,7 @@ import { CredentialsProvider } from ".";
 import { AssumeRoleCredentialsProvider } from "./credentials/assumeRoleCredentialsProvider";
 import { isCredentialsProvider } from "./credentials/isCredentialsProvider";
 import { SimpleCredentialsProvider } from "./credentials/simpleCredentialsProvider";
+import { OutgoingHttpHeaders } from "http";
 
 export interface InterceptorOptions {
   /**
@@ -43,7 +45,7 @@ export interface InterceptorOptions {
    * Use the role session name to uniquely identify a session when the same role is
    * assumed by different principals or for different reasons.
    * In cross-account scenarios, the role session name is visible to,
-   * and can be logged by the account that owns the role. 
+   * and can be logged by the account that owns the role.
    */
   assumeRoleSessionName?: string;
 }
@@ -131,7 +133,7 @@ export const aws4Interceptor = <D = any>({
 
     const { host, pathname, search } = new URL(url);
     const { data, method } = config;
-    const headers = new AxiosHeaders(config.headers);
+    const headers = config.headers;
 
     const transformRequest = getTransformer(config);
 
@@ -150,7 +152,7 @@ export const aws4Interceptor = <D = any>({
       put,
       patch,
       ...headersToSign
-    } = headers as any as InternalAxiosHeaders;
+    } = headers as unknown as InternalAxiosHeaders;
     // Axios type definitions do not match the real shape of this object
 
     const signingOptions: AWS4Request = {
@@ -161,13 +163,19 @@ export const aws4Interceptor = <D = any>({
       service: options?.service,
       signQuery: options?.signQuery,
       body: transformedData,
-      headers: removeUndefined(headersToSign) as any,
+      headers: removeUndefined(headersToSign) as unknown as OutgoingHttpHeaders,
     };
 
     const resolvedCredentials = await credentialsProvider.getCredentials();
     sign(signingOptions, resolvedCredentials);
 
-    config.headers = signingOptions.headers as AxiosHeaders;
+    const signedHeaders = signingOptions.headers;
+
+    if (signedHeaders) {
+      config.headers = AxiosHeaders.from(
+        outgoingHttpHeadersToAxiosHeaders(signedHeaders)
+      );
+    }
 
     if (signingOptions.signQuery) {
       const originalUrl = new URL(url);
@@ -180,6 +188,25 @@ export const aws4Interceptor = <D = any>({
 
     return config;
   };
+};
+
+// Type is not exported by axios
+interface _RawAxiosHeaders {
+  [key: string]: AxiosHeaderValue;
+}
+
+const outgoingHttpHeadersToAxiosHeaders = (
+  headers: OutgoingHttpHeaders
+): _RawAxiosHeaders => {
+  const axiosHeaders: _RawAxiosHeaders = {};
+
+  for (const [key, value] of Object.entries(headers)) {
+    if (value) {
+      axiosHeaders[key] = value;
+    }
+  }
+
+  return axiosHeaders;
 };
 
 const getTransformer = (config: AxiosRequestConfig) => {

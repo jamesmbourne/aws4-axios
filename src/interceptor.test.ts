@@ -501,4 +501,51 @@ describe("credentials", () => {
       }
     );
   });
+
+  it("allows empty URL when baseURL is set", async () => {
+    // Arrange
+    const request: InternalAxiosRequestConfig = {
+      method: "GET",
+      url: "",
+      headers: getDefaultHeaders(),
+      transformRequest: getDefaultTransformRequest(),
+    };
+
+    const client = axios.create({
+      baseURL: "https://example.com",
+    });
+
+    const interceptor = aws4Interceptor({
+      options: {
+        region: "local",
+        service: "execute-api",
+        assumeRoleArn: "arn:aws:iam::111111111111:role/MockRole",
+      },
+      credentials: {
+        accessKeyId: "access-key-id",
+        secretAccessKey: "secret-access-key",
+        sessionToken: "session-token",
+      },
+      instance: client,
+    });
+
+    // Act
+    await expect(interceptor(request)).resolves.toBeDefined();
+    expect(sign).toBeCalledWith(
+      {
+        service: "execute-api",
+        path: "/",
+        method: "GET",
+        region: "local",
+        host: "example.com",
+        headers: {},
+        signQuery: undefined,
+      },
+      {
+        accessKeyId: "access-key-id",
+        secretAccessKey: "secret-access-key",
+        sessionToken: "session-token",
+      }
+    );
+  });
 });

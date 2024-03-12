@@ -1,7 +1,5 @@
 import { Request as AWS4Request, sign } from "aws4";
 import axios, {
-  AxiosHeaderValue,
-  AxiosHeaders,
   AxiosInstance,
   AxiosRequestConfig,
   AxiosRequestHeaders,
@@ -9,11 +7,11 @@ import axios, {
   Method,
 } from "axios";
 
+import { OutgoingHttpHeaders } from "http";
 import { CredentialsProvider } from ".";
 import { AssumeRoleCredentialsProvider } from "./credentials/assumeRoleCredentialsProvider";
 import { isCredentialsProvider } from "./credentials/isCredentialsProvider";
 import { SimpleCredentialsProvider } from "./credentials/simpleCredentialsProvider";
-import { OutgoingHttpHeaders } from "http";
 
 export interface InterceptorOptions {
   /**
@@ -169,12 +167,10 @@ export const aws4Interceptor = <D = any>({
     const resolvedCredentials = await credentialsProvider.getCredentials();
     sign(signingOptions, resolvedCredentials);
 
-    const signedHeaders = signingOptions.headers;
-
-    if (signedHeaders) {
-      config.headers = AxiosHeaders.from(
-        outgoingHttpHeadersToAxiosHeaders(signedHeaders)
-      );
+    if (signingOptions.headers) {
+      for (const [key, value] of Object.entries(signingOptions.headers)) {
+        config.headers.set(key, value);
+      }
     }
 
     if (signingOptions.signQuery) {
@@ -188,25 +184,6 @@ export const aws4Interceptor = <D = any>({
 
     return config;
   };
-};
-
-// Type is not exported by axios
-interface _RawAxiosHeaders {
-  [key: string]: AxiosHeaderValue;
-}
-
-const outgoingHttpHeadersToAxiosHeaders = (
-  headers: OutgoingHttpHeaders
-): _RawAxiosHeaders => {
-  const axiosHeaders: _RawAxiosHeaders = {};
-
-  for (const [key, value] of Object.entries(headers)) {
-    if (value) {
-      axiosHeaders[key] = value;
-    }
-  }
-
-  return axiosHeaders;
 };
 
 const getTransformer = (config: AxiosRequestConfig) => {

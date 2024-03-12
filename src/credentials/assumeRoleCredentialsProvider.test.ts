@@ -14,7 +14,7 @@ const oneHourMs = 1000 * 60 * 60;
 
 beforeAll(() => {
   process.env.AWS_REGION = "eu-central-1";
-  jest.useFakeTimers("modern");
+  jest.useFakeTimers();
 });
 
 afterAll(() => {

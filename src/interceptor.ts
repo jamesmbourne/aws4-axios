@@ -125,7 +125,7 @@ export const aws4Interceptor = <D = any>({
   return async (config) => {
     const url = instance.getUri(config);
 
-    if (!config.url) {
+    if (!url) {
       throw new Error(
         "No URL present in request config, unable to sign request"
       );

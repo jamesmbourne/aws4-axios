@@ -70,8 +70,8 @@ export type InternalAxiosHeaders = Record<
   Record<string, string>
 >;
 
-const removeUndefined = (obj: Record<string, any>) => {
-  const newObj: Record<string, any> = {};
+const removeUndefined = <T>(obj: Record<string, T>) => {
+  const newObj: Record<string, T> = {};
 
   for (const [key, value] of Object.entries(obj)) {
     if (value !== undefined) {
@@ -94,6 +94,8 @@ const removeUndefined = (obj: Record<string, any>) => {
  * @param options The options to be used when signing a request
  * @param credentials Credentials to be used to sign the request
  */
+// this would be a breaking change to the API
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const aws4Interceptor = <D = any>({
   instance = axios,
   credentials,

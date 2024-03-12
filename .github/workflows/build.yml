@@ -20,7 +20,7 @@ jobs:
         axios-version: ["1.4.0", "1.5.0", "1.6.0", "latest"]
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:

@@ -19,7 +19,7 @@ describe("getAuthErrorMessage", () => {
         status: 403,
         headers: {},
         config: { headers: new AxiosHeaders() },
-      }
+      },
     );
 
     // Act
@@ -42,7 +42,7 @@ describe("getAuthErrorMessage", () => {
         status: 200,
         headers: {},
         config: { headers: new AxiosHeaders() },
-      }
+      },
     );
 
     // Act

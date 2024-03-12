@@ -105,7 +105,7 @@ export const aws4Interceptor = <D = any>({
   options?: InterceptorOptions;
   credentials?: Credentials | CredentialsProvider;
 }): ((
-  config: InternalAxiosRequestConfig<D>
+  config: InternalAxiosRequestConfig<D>,
 ) => Promise<InternalAxiosRequestConfig<D>>) => {
   let credentialsProvider: CredentialsProvider;
 
@@ -127,7 +127,7 @@ export const aws4Interceptor = <D = any>({
 
     if (!url) {
       throw new Error(
-        "No URL present in request config, unable to sign request"
+        "No URL present in request config, unable to sign request",
       );
     }
 
@@ -200,6 +200,6 @@ const getTransformer = (config: AxiosRequestConfig) => {
   }
 
   throw new Error(
-    "Could not get default transformRequest function from Axios defaults"
+    "Could not get default transformRequest function from Axios defaults",
   );
 };

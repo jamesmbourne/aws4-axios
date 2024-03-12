@@ -69,7 +69,7 @@ describe("interceptor", () => {
         host: "example.com",
         headers: {},
       },
-      undefined
+      undefined,
     );
   });
 
@@ -103,7 +103,7 @@ describe("interceptor", () => {
         host: "example.com",
         headers: {},
       },
-      undefined
+      undefined,
     );
   });
 
@@ -138,7 +138,7 @@ describe("interceptor", () => {
         host: "example.com",
         headers: {},
       },
-      undefined
+      undefined,
     );
   });
 
@@ -176,7 +176,7 @@ describe("interceptor", () => {
         body: '{"foo":"bar"}',
         headers: { "Content-Type": "application/json" },
       },
-      undefined
+      undefined,
     );
   });
 
@@ -213,7 +213,7 @@ describe("interceptor", () => {
         body: "foobar",
         headers: {},
       },
-      undefined
+      undefined,
     );
   });
 
@@ -253,7 +253,7 @@ describe("interceptor", () => {
         body: "foobar",
         headers: { "Content-Type": "application/xml" },
       },
-      undefined
+      undefined,
     );
   });
 
@@ -294,7 +294,7 @@ describe("interceptor", () => {
         body: "foobar",
         headers: { "Content-Type": "application/xml" },
       },
-      undefined
+      undefined,
     );
   });
 
@@ -330,7 +330,7 @@ describe("interceptor", () => {
         headers: {},
         signQuery: true,
       },
-      undefined
+      undefined,
     );
   });
 });
@@ -375,7 +375,7 @@ describe("credentials", () => {
         accessKeyId: "access-key-id",
         secretAccessKey: "secret-access-key",
         sessionToken: "session-token",
-      }
+      },
     );
   });
 
@@ -414,7 +414,7 @@ describe("credentials", () => {
         accessKeyId: "assumed-access-key-id",
         secretAccessKey: "assumed-secret-access-key",
         sessionToken: "assumed-session-token",
-      }
+      },
     );
   });
 
@@ -454,7 +454,7 @@ describe("credentials", () => {
         accessKeyId: "custom-provider-access-key-id",
         secretAccessKey: "custom-provider-secret-access-key",
         sessionToken: "custom-provider-session-token",
-      }
+      },
     );
   });
 
@@ -498,7 +498,7 @@ describe("credentials", () => {
         accessKeyId: "access-key-id",
         secretAccessKey: "secret-access-key",
         sessionToken: "session-token",
-      }
+      },
     );
   });
 
@@ -545,7 +545,7 @@ describe("credentials", () => {
         accessKeyId: "access-key-id",
         secretAccessKey: "secret-access-key",
         sessionToken: "session-token",
-      }
+      },
     );
   });
 });

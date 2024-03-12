@@ -21,7 +21,7 @@ describe("axios interceptor", () => {
     const client = axios.create();
 
     client.interceptors.request.use(
-      aws4Interceptor({ options: { region: "local" }, instance: axios })
+      aws4Interceptor({ options: { region: "local" }, instance: axios }),
     );
 
     const url = "http://localhost/foo";
@@ -45,7 +45,7 @@ describe("axios interceptor", () => {
     const client = axios.create();
 
     client.interceptors.request.use(
-      aws4Interceptor({ options: { region: "local" }, instance: axios })
+      aws4Interceptor({ options: { region: "local" }, instance: axios }),
     );
 
     const data = { foo: "bar" };
@@ -93,7 +93,7 @@ describe("axios interceptor", () => {
     const client = axios.create();
 
     client.interceptors.request.use(
-      aws4Interceptor({ options: { region: "local" }, instance: axios })
+      aws4Interceptor({ options: { region: "local" }, instance: axios }),
     );
 
     const data = { foo: "bar" };

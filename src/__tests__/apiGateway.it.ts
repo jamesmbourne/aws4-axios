@@ -19,7 +19,7 @@ beforeAll(async () => {
     new AssumeRoleCommand({
       RoleArn: clientRoleArn,
       RoleSessionName: "integration-tests",
-    })
+    }),
   );
 
   clientCredentials = {
@@ -49,13 +49,13 @@ describe("check that API is actually protected", () => {
     "checks that HTTP %s is protected",
     async (method) => {
       await expect(
-        axios.request({ url: apiGateway, method })
+        axios.request({ url: apiGateway, method }),
       ).rejects.toMatchObject({
         response: {
           status: 403,
         },
       });
-    }
+    },
   );
 });
 
@@ -76,7 +76,7 @@ describe("with credentials from environment variables", () => {
     client = axios.create();
 
     client.interceptors.request.use(
-      aws4Interceptor({ options: { region, service }, instance: client })
+      aws4Interceptor({ options: { region, service }, instance: client }),
     );
   });
 
@@ -228,7 +228,7 @@ describe("signQuery", () => {
           service,
           signQuery: true,
         },
-      })
+      }),
     );
 
     const result = await client.request({
@@ -244,7 +244,7 @@ describe("signQuery", () => {
 describe("with role to assume", () => {
   let client: AxiosInstance;
   const assumedRoleName = assumedClientRoleArn?.substr(
-    assumedClientRoleArn.indexOf("/") + 1
+    assumedClientRoleArn.indexOf("/") + 1,
   );
 
   beforeAll(() => {
@@ -260,7 +260,7 @@ describe("with role to assume", () => {
       aws4Interceptor({
         options: { region, service, assumeRoleArn: assumedClientRoleArn },
         instance: client,
-      })
+      }),
     );
   });
 
@@ -271,8 +271,8 @@ describe("with role to assume", () => {
 
       expect(result?.status).toEqual(200);
       expect(
-        result && result.data.requestContext.authorizer.iam.userArn
+        result && result.data.requestContext.authorizer.iam.userArn,
       ).toContain("/" + assumedRoleName + "/");
-    }
+    },
   );
 });

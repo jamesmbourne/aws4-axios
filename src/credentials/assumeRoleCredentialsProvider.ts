@@ -50,7 +50,7 @@ export class AssumeRoleCredentialsProvider implements CredentialsProvider {
       new AssumeRoleCommand({
         RoleArn: this.options.roleArn,
         RoleSessionName: this.options.roleSessionName,
-      })
+      }),
     );
 
     if (!res.Credentials) {

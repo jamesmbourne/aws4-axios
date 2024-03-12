@@ -113,16 +113,19 @@ export const mockSend = <
   HandlerOptions,
   ClientInput extends object, // eslint-disable-line @typescript-eslint/ban-types
   ClientOutput extends MetadataBearer,
-  ResolvedClientConfiguration extends SmithyResolvedConfiguration<HandlerOptions>,
+  ResolvedClientConfiguration extends
+    SmithyResolvedConfiguration<HandlerOptions>,
   InputType extends ClientInput,
-  OutputType extends ClientOutput
+  OutputType extends ClientOutput,
 >(
-  client: new (config: never) => Client<
+  client: new (
+    config: never,
+  ) => Client<
     HandlerOptions,
     ClientInput,
     ClientOutput,
     ResolvedClientConfiguration
-  >
+  >,
 ): jest.Mock<
   unknown,
   [Command<InputType, OutputType, ResolvedClientConfiguration>]

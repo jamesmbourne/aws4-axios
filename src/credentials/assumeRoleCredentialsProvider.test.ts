@@ -5,7 +5,7 @@ import {
   Client,
   Command,
   SmithyResolvedConfiguration,
-} from "@aws-sdk/smithy-client";
+} from "@smithy/smithy-client";
 
 jest.mock("@aws-sdk/client-sts");
 let mockSTSSend: jest.Mock;
@@ -119,13 +119,13 @@ export const mockSend = <
   OutputType extends ClientOutput,
 >(
   client: new (
-    config: never,
+    config: never
   ) => Client<
     HandlerOptions,
     ClientInput,
     ClientOutput,
     ResolvedClientConfiguration
-  >,
+  >
 ): jest.Mock<
   unknown,
   [Command<InputType, OutputType, ResolvedClientConfiguration>]

@@ -5,7 +5,7 @@ import {
   Client,
   Command,
   SmithyResolvedConfiguration,
-} from "@aws-sdk/smithy-client";
+} from "@smithy/smithy-client";
 
 jest.mock("@aws-sdk/client-sts");
 let mockSTSSend: jest.Mock;

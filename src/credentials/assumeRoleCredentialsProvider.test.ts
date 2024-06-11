@@ -119,13 +119,13 @@ export const mockSend = <
   OutputType extends ClientOutput,
 >(
   client: new (
-    config: never
+    config: never,
   ) => Client<
     HandlerOptions,
     ClientInput,
     ClientOutput,
     ResolvedClientConfiguration
-  >
+  >,
 ): jest.Mock<
   unknown,
   [Command<InputType, OutputType, ResolvedClientConfiguration>]

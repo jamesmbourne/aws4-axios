@@ -1,4 +1,6 @@
 import { sign } from "aws4";
+import { createHash } from "crypto";
+
 import axios, {
   AxiosHeaders,
   AxiosRequestHeaders,
@@ -37,6 +39,7 @@ const getDefaultTransformRequest = () => axios.defaults.transformRequest;
 beforeEach(() => {
   (sign as jest.Mock).mockReset();
 });
+
 
 describe("interceptor", () => {
   it("signs GET requests", async () => {
@@ -215,6 +218,35 @@ describe("interceptor", () => {
       },
       undefined,
     );
+
+    expect(request.headers['X-Amz-Content-Sha256']).toBeUndefined()
+  });
+
+  it("adds X-Amz-Content-Sha256 for a string payload", async () => {
+    // Arrange
+    const data = "foobar";
+    const request: InternalAxiosRequestConfig = {
+      method: "POST",
+      url: "https://example.com/foobar",
+      data,
+      headers: getDefaultHeaders(),
+      transformRequest: getDefaultTransformRequest(),
+    };
+
+    const interceptor = aws4Interceptor({
+      options: {
+        region: "local",
+        service: "execute-api",
+        addContentSha: true
+      },
+      instance: axios,
+    });
+
+    // Act
+    await interceptor(request);
+
+    // Assert
+    expect(request.headers['X-Amz-Content-Sha256']).toEqual('c3ab8ff13720e8ad9047dd39466b3c8974e592c2fa383d4a3960714caef0c4f2')
   });
 
   it("passes Content-Type header to be signed", async () => {
@@ -332,6 +364,31 @@ describe("interceptor", () => {
       },
       undefined,
     );
+  });
+
+  it("passes option to add a content SHA", async () => {
+    // Arrange
+    const request: InternalAxiosRequestConfig = {
+      method: "GET",
+      url: "https://example.com/foobar",
+      headers: getDefaultHeaders(),
+      transformRequest: getDefaultTransformRequest(),
+    };
+
+    const interceptor = aws4Interceptor({
+      instance: axios,
+      options: {
+        region: "local",
+        service: "execute-api",
+        addContentSha: true,
+      },
+    });
+
+    // Act
+    await interceptor(request);
+
+    // Assert
+    expect(request.headers['X-Amz-Content-Sha256']).toEqual('e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855')
   });
 });
 

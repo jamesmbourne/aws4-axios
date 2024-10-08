@@ -73,7 +73,7 @@ describe("interceptor", () => {
     );
   });
 
-  it("signs url query paremeters in GET requests", async () => {
+  it("signs url query parameters in GET requests", async () => {
     // Arrange
     const request: InternalAxiosRequestConfig = {
       method: "GET",
@@ -107,7 +107,7 @@ describe("interceptor", () => {
     );
   });
 
-  it("signs query paremeters in GET requests", async () => {
+  it("signs query parameters in GET requests", async () => {
     // Arrange
     const request: InternalAxiosRequestConfig = {
       method: "GET",
@@ -547,5 +547,50 @@ describe("credentials", () => {
         sessionToken: "session-token",
       },
     );
+  });
+
+  it("supports retries", async () => {
+    // Arrange
+    const data = { foo: "bar" };
+
+    const request: InternalAxiosRequestConfig = {
+      method: "POST",
+      url: "https://example.com/foobar",
+      data,
+      headers: getDefaultHeaders(),
+      transformRequest: getDefaultTransformRequest(),
+    };
+
+
+    (sign as jest.Mock).mockImplementation((request) => {
+      // neither call should contain the previous Authorization header
+      expect(request).toEqual({
+        service: "execute-api",
+        path: "/foobar",
+        method: "POST",
+        region: "local",
+        host: "example.com",
+        body: '{"foo":"bar"}',
+        headers: { "Content-Type": "application/json" },
+        signQuery: undefined
+      })
+      request.headers['Authorization'] = 'signed';
+      return request;
+    })
+
+    const interceptor = aws4Interceptor({
+      options: {
+        region: "local",
+        service: "execute-api",
+      },
+      instance: axios,
+    });
+
+    // Act
+    await interceptor(request);
+    await interceptor(request);
+    await interceptor(request);
+
+    expect(sign).toBeCalledTimes(3)
   });
 });

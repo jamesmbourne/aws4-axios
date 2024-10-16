@@ -179,8 +179,9 @@ export const aws4Interceptor = <D = any>({
       const originalUrl = new URL(url);
       const signedUrl = new URL(originalUrl.origin + signingOptions.path);
 
-      for (const [key, value] of signedUrl.searchParams.entries()) {
-        config.params[key] = value;
+      config.params = {
+        ...config.params,
+        ...Object.fromEntries(signedUrl.searchParams.entries())
       }
     }
 

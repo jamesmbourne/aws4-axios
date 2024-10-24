@@ -12,6 +12,7 @@ import { CredentialsProvider } from ".";
 import { AssumeRoleCredentialsProvider } from "./credentials/assumeRoleCredentialsProvider";
 import { isCredentialsProvider } from "./credentials/isCredentialsProvider";
 import { SimpleCredentialsProvider } from "./credentials/simpleCredentialsProvider";
+import { createHash } from "crypto";
 
 export interface InterceptorOptions {
   /**
@@ -26,6 +27,10 @@ export interface InterceptorOptions {
    * Whether to sign query instead of adding Authorization header. Default to false.
    */
   signQuery?: boolean;
+  /**
+   * Whether to add a X-Amz-Content-Sha256 header.
+   */
+  addContentSha?: boolean;
   /**
    * ARN of the IAM Role to be assumed to get the credentials from.
    * The credentials will be cached and automatically refreshed as needed.
@@ -56,6 +61,7 @@ export interface SigningOptions {
   region?: string;
   service?: string;
   signQuery?: boolean;
+  addContentSha?: boolean;
   method?: string;
 }
 
@@ -162,6 +168,7 @@ export const aws4Interceptor = <D = any>({
       region: options?.region,
       service: options?.service,
       signQuery: options?.signQuery,
+      addContentSha: options?.addContentSha,
       body: transformedData,
       headers: removeUndefined(headersToSign) as unknown as OutgoingHttpHeaders,
     };
@@ -182,6 +189,10 @@ export const aws4Interceptor = <D = any>({
       for (const [key, value] of signedUrl.searchParams.entries()) {
         config.params[key] = value;
       }
+    }
+
+    if (signingOptions.addContentSha) {
+      config.headers.set('X-Amz-Content-Sha256', createHash('sha256').update(transformedData ?? '', 'utf8').digest('hex'))
     }
 
     return config;

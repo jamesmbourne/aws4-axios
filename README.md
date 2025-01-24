@@ -113,6 +113,22 @@ const interceptor = aws4Interceptor({
 });
 ```
 
+Newer services, such as [Amazon OpenSearch Serverless](https://aws.amazon.com/opensearch-service/features/serverless/), require a content SHA. Pass `addContentSha` to `options` to enable adding an `X-Amz-Content-Sha256` header to the request.
+
+```typescript
+const interceptor = aws4Interceptor({
+  options: {
+    region: "eu-west-2",
+    service: "aoss",
+    addContentSha: true,
+  },
+  credentials: {
+    accessKeyId: "",
+    secretAccessKey: "",
+  },
+});
+```
+
 # Migration to v3
 
 The interface for options changed in v3. You should now pass a single object with configuration.

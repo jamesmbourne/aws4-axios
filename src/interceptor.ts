@@ -1,5 +1,6 @@
 import { Request as AWS4Request, sign } from "aws4";
 import axios, {
+  AxiosHeaders,
   AxiosInstance,
   AxiosRequestConfig,
   AxiosRequestHeaders,
@@ -133,11 +134,19 @@ export const aws4Interceptor = <D = any>({
 
     const { host, pathname, search } = new URL(url);
     const { data, method } = config;
-    const headers = config.headers;
-
+    
     const transformRequest = getTransformer(config);
 
     transformRequest.bind(config);
+
+    // Save, and reset headers on retry
+    if (config._originalHeaders) {
+      config.headers = new AxiosHeaders(config._originalHeaders);
+    } else {
+      config._originalHeaders = new AxiosHeaders(config.headers);
+    }
+    
+    const headers = config.headers;
 
     // @ts-expect-error we bound the function to the config object
     const transformedData = transformRequest(data, headers);

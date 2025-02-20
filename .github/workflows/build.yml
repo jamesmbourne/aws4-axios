@@ -16,8 +16,8 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [18.x, 20.x]
-        axios-version: ["1.4.0", "1.5.0", "1.6.0", "latest"]
+        node-version: [20.x, 22.x]
+        axios-version: ["1.6.0", "1.7.0", "latest"]
 
     steps:
       - uses: actions/checkout@v4

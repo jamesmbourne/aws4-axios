@@ -1,7 +1,7 @@
 # aws4-axios
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-7-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-8-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 [![npm version](https://img.shields.io/npm/v/aws4-axios.svg?style=flat-square)](https://www.npmjs.org/package/aws4-axios)
@@ -212,6 +212,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
       <td align="center" valign="top" width="14.28%"><a href="https://www.ballpointcarrot.net"><img src="https://avatars.githubusercontent.com/u/96404?v=4?s=100" width="100px;" alt="Christopher Kruse"/><br /><sub><b>Christopher Kruse</b></sub></a><br /><a href="https://github.com/jamesmbourne/aws4-axios/commits?author=ballpointcarrot" title="Tests">⚠️</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://plus.google.com/photos/104306225331370072882/albums"><img src="https://avatars.githubusercontent.com/u/8565700?v=4?s=100" width="100px;" alt="James Hu"/><br /><sub><b>James Hu</b></sub></a><br /><a href="https://github.com/jamesmbourne/aws4-axios/commits?author=james-hu" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://code.dblock.org"><img src="https://avatars.githubusercontent.com/u/542335?v=4?s=100" width="100px;" alt="Daniel (dB.) Doubrovkine"/><br /><sub><b>Daniel (dB.) Doubrovkine</b></sub></a><br /><a href="https://github.com/jamesmbourne/aws4-axios/commits?author=dblock" title="Code">💻</a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/frtelg"><img src="https://avatars.githubusercontent.com/u/43170660?v=4?s=100" width="100px;" alt="Franke Telgenhof"/><br /><sub><b>Franke Telgenhof</b></sub></a><br /><a href="https://github.com/jamesmbourne/aws4-axios/commits?author=frtelg" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>

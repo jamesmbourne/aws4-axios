@@ -83,6 +83,10 @@ const removeUndefined = <T>(obj: Record<string, T>) => {
   return newObj;
 };
 
+interface Aws4Config<D> extends InternalAxiosRequestConfig<D> {
+  _originalHeaders: AxiosHeaders;
+}
+
 /**
  * Create an interceptor to add to the Axios request chain. This interceptor
  * will sign requests with the AWSv4 signature.
@@ -140,10 +144,10 @@ export const aws4Interceptor = <D = any>({
     transformRequest.bind(config);
 
     // Save, and reset headers on retry
-    if (config._originalHeaders) {
-      config.headers = new AxiosHeaders(config._originalHeaders);
+    if ((config as Aws4Config<D>)._originalHeaders) {
+      config.headers = new AxiosHeaders((config as Aws4Config<D>)._originalHeaders);
     } else {
-      config._originalHeaders = new AxiosHeaders(config.headers);
+      (config as Aws4Config<D>)._originalHeaders = new AxiosHeaders(config.headers);
     }
     
     const headers = config.headers;

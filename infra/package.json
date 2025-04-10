@@ -18,7 +18,7 @@
     "ts-node": "^10.9.1",
     "@aws-cdk/aws-apigatewayv2-authorizers-alpha": "^2.78.0-alpha.0",
     "@aws-cdk/aws-apigatewayv2-integrations-alpha": "^2.78.0-alpha.0",
-    "aws-cdk-lib": "2.188.0",
+    "aws-cdk-lib": "2.189.0",
     "constructs": "^10.0.0",
     "source-map-support": "^0.5.21"
   }

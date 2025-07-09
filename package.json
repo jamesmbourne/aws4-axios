@@ -58,7 +58,7 @@
     "serverless": "^4.0.0",
     "ts-jest": "^29.0.0",
     "typescript": "^5.0.0",
-    "zod": "^3.21.4"
+    "zod": "^4.0.0"
   },
   "dependencies": {
     "@aws-sdk/client-sts": "^3.4.1",

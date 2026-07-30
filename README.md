@@ -75,6 +75,34 @@ client.get("https://example.com/foo").then((res) => {
 });
 ```
 
+## POST requests
+
+`POST`, `PUT`, `PATCH`, etc. work the same way as `GET` — just call the matching Axios method with a body, and the interceptor signs it for you:
+
+```typescript
+axios
+  .post("https://example.com/foo", {
+    hello: "world",
+  })
+  .then((res) => {
+    // ...
+  });
+```
+
+If the target expects an explicit `Content-Type`, set it in the request config as usual; the interceptor reads it before signing:
+
+```typescript
+axios
+  .post(
+    "https://example.com/foo",
+    { hello: "world" },
+    { headers: { "Content-Type": "application/json" } },
+  )
+  .then((res) => {
+    // ...
+  });
+```
+
 You can also pass AWS credentials in explicitly (otherwise taken from process.env)
 
 ```typescript

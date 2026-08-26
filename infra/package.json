@@ -13,7 +13,7 @@
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.115",
-    "@types/node": "^22.0.0",
+    "@types/node": "^24.0.0",
     "aws-cdk": "2.1033.0",
     "ts-node": "^10.9.1",
     "@aws-cdk/aws-apigatewayv2-authorizers-alpha": "^2.78.0-alpha.0",
